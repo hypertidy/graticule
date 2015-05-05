@@ -9,3 +9,4 @@ Description: Create graticule lines.
 License: GPL-3
 LazyData: TRUE
 Depends: trip
+Suggests: testhat
