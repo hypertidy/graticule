@@ -8,5 +8,5 @@ Authors@R: person("Michael D.","Sumner", role = c("aut", "cre"), email =
 Description: Create graticule lines.
 License: GPL-3
 LazyData: TRUE
-Depends: trip
+Depends: sp
 Suggests: testhat

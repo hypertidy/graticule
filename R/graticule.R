@@ -2,9 +2,16 @@
 limfun <- function(x, lim, nd = 60, meridian = TRUE) {
   ind <- 1:2
   if (!meridian) ind <- 2:1
-  cbind(x, seq(lim[1], lim[2], length = nd))[, ind]
+  cbind(x = x, y = seq(lim[1], lim[2], length = nd))[, ind]
 }
 
+buildlines <- function(x) {
+  do.call("rbind", lapply(seq_along(x), function(xx) {
+    res <- data.frame(x[[xx]], rep(xx, nrow(x[[xx]])))
+    names(res) <- c("x", "y", "id")
+    res
+  }))
+}
 #' Create a graticule.
 #'
 #' @param easts longitudes for meridional lines
@@ -35,24 +42,20 @@ graticule <- function(easts, norths, ndiscr = 60, xlim, ylim) {
   if (missing(ylim)) ylim <- range(norths)
   xlines <- lapply(easts, limfun, lim = ylim, meridian = TRUE)
   ylines <- lapply(norths, limfun, lim = xlim, meridian = FALSE)
-  xs <- do.call("rbind", lapply(seq_along(xlines), function(xx) {
-    res <- data.frame(xlines[[xx]], rep(xx, nrow(xlines[[xx]])), Sys.time() + seq( nrow(xlines[[xx]])))
-    names(res) <- c("x", "y", "id", "time")
-    res
-  }))
-  ys <- do.call("rbind", lapply(seq_along(ylines), function(xx) {
-    res <- data.frame(ylines[[xx]], rep(xx, nrow(ylines[[xx]])) + max(xs$id), Sys.time() + seq( nrow(ylines[[xx]])))
-    names(res) <- c("x", "y", "id", "time")
-    res
-  }))
+  xs <- buildlines(xlines)
+  ys <- buildlines(ylines)
   xs$type <- "meridian"
   ys$type <- "parallel"
   d <- rbind(xs, ys)
-  coordinates(d) <- ~x+y
-  proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
-  d0 <- as(trip(d, c("time", "id")), "SpatialLinesDataFrame")
-  d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
-  d0
+#  coordinates(d) <- ~x+y
+ # proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+  d0 <- split(d, d$id)
+  l <- vector("list", length(d0))
+  for (i in seq_along(d0)) l[[i]] <- Lines(list(Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
+  SpatialLinesDataFrame(SpatialLines(l, proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")),
+                        data.frame(ID = as.character(seq_along(l))))
+  #d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
+
 }
 
 #
