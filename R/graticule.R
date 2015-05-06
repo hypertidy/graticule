@@ -38,12 +38,26 @@ buildlines <- function(x) {
 #'
 #' }
 graticule <- function(easts, norths, ndiscr = 60, xlim, ylim) {
+  if (missing(easts) & missing(norths)) {
+    #usr <- par("usr")
+    #if (all(usr == c(0, 1, 0, 1))) {
+      easts <- seq(-180, 180, by = 15)
+      norths <- seq(-80, 80, by = 10)
+
+    #} else {
+    #easts <- pretty(range(usr[1:2]))
+    #norths <- pretty(range(usr[3:4]))
+    #plot}
+
+    }
+
   if (missing(xlim)) xlim <- range(easts)
   if (missing(ylim)) ylim <- range(norths)
   xlines <- lapply(easts, limfun, lim = ylim, meridian = TRUE)
   ylines <- lapply(norths, limfun, lim = xlim, meridian = FALSE)
   xs <- buildlines(xlines)
   ys <- buildlines(ylines)
+  ys$id <- ys$id + max(xs$id)
   xs$type <- "meridian"
   ys$type <- "parallel"
   d <- rbind(xs, ys)
