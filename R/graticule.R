@@ -1,4 +1,8 @@
-
+#' graticule: graticule lines for maps
+#'
+#' @docType package
+#' @name graticule
+NULL
 limfun <- function(x, lim, nd = 60, meridian = TRUE) {
   ind <- 1:2
   if (!meridian) ind <- 2:1
@@ -11,6 +15,23 @@ buildlines <- function(x) {
     names(res) <- c("x", "y", "id")
     res
   }))
+}
+
+## from raster findMethods("isLonLat")[["character"]]
+isLonLat <- function (x)
+{
+  res1 <- grep("longlat", as.character(x), fixed = TRUE)
+  res2 <- grep("lonlat", as.character(x), fixed = TRUE)
+  if (length(res1) == 0L && length(res2) == 0L) {
+    return(FALSE)
+  }
+  else {
+    return(TRUE)
+  }
+}
+
+lonlatp4 <- function() {
+  "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0"
 }
 #' Create a graticule.
 #'
@@ -37,19 +58,19 @@ buildlines <- function(x) {
 #' plot(pg2, add = TRUE)
 #'
 #' }
-graticule <- function(easts, norths, ndiscr = 60, xlim, ylim) {
-  if (missing(easts) & missing(norths)) {
+graticule <- function(easts, norths, ndiscr = 60, xlim, ylim, proj = NULL) {
+  if (is.null(proj)) proj <- lonlatp4()
+  proj <- as.character(proj)  ## in case we are given CRS
+  trans <- FALSE
+  if (!isLonLat(proj)) trans <- TRUE
+  if (missing(easts)) {
     #usr <- par("usr")
     #if (all(usr == c(0, 1, 0, 1))) {
       easts <- seq(-180, 180, by = 15)
-      norths <- seq(-80, 80, by = 10)
-
-    #} else {
-    #easts <- pretty(range(usr[1:2]))
-    #norths <- pretty(range(usr[3:4]))
-    #plot}
-
-    }
+  }
+  if (missing(norths)) {
+      norths <- seq(-90, 90, by = 10)
+  }
 
   if (missing(xlim)) xlim <- range(easts)
   if (missing(ylim)) ylim <- range(norths)
@@ -66,55 +87,10 @@ graticule <- function(easts, norths, ndiscr = 60, xlim, ylim) {
   d0 <- split(d, d$id)
   l <- vector("list", length(d0))
   for (i in seq_along(d0)) l[[i]] <- Lines(list(Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
-  SpatialLinesDataFrame(SpatialLines(l, proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")),
+  l <- SpatialLinesDataFrame(SpatialLines(l, proj4string = CRS(lonlatp4())),
                         data.frame(ID = as.character(seq_along(l))))
+  if (trans) l <- rgdal:::spTransform.SpatialLinesDataFrame(l, CRS(proj))
+  l
   #d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
 
 }
-
-#
-# mikegl <- function(easts, norths, ndiscr = 50, crs = NULL, llcrs = "+proj=longlat +datum=WGS84 +ellps=WGS84", side = "WS") {
-#   {
-#     xlim <- range(easts)
-#     ylim <- range(norths)
-#     eastlist <- vector(mode = "list", length = length(easts))
-#     for (i in 1:length(easts)) eastlist[[i]] <- Line(cbind(rep(easts[i],  ndiscr), seq(ylim[1], ylim[2], length.out = ndiscr)))
-#     northlist <- vector(mode = "list", length = length(norths))
-#     for (i in 1:length(norths)) northlist[[i]] <- Line(cbind(seq(xlim[1], xlim[2], length.out = ndiscr), rep(norths[i], ndiscr)))
-#     grd_x <- SpatialLines(list(Lines(northlist, "NS"), Lines(eastlist,  "EW")), CRS(llcrs))
-#     grd_x <- spTransform(grd_x, CRS(crs))
-#
-#     return(grd_x)
-#   }
-# }
-#
-#
-#
-# function (obj, easts, norths, ndiscr = 50, lty = 2, offset = 0.5,
-#           side = "WS", llcrs = "+proj=longlat +datum=WGS84", plotLines = TRUE,
-#           plotLabels = TRUE, ...)
-# {
-#   obj_ll <- spTransform(obj, CRS(llcrs))
-#   if (missing(easts))
-#     easts = pretty(bbox(obj_ll)[1, ])
-#   if (missing(norths))
-#     norths = pretty(bbox(obj_ll)[2, ])
-#   grd <- gridlines(obj_ll, easts = easts, norths = norths,
-#                    ndiscr = ndiscr)
-#   grd_x <- spTransform(grd, CRS(proj4string(obj)))
-#   return(grd_x)
-#   if (plotLines)
-#     plot(grd_x, add = TRUE, lty = lty, ...)
-#   if (packageVersion("sp") >= "0.9.84") {
-#     grdat_ll <- gridat(obj_ll, easts = easts, norths = norths,
-#                        side = side, offset = offset)
-#   }
-#   else {
-#     grdat_ll <- gridat(obj_ll, easts = easts, norths = norths,
-#                        offset = offset)
-#   }
-#   grdat_x <- spTransform(grdat_ll, CRS(proj4string(obj)))
-#   if (plotLabels)
-#     text(coordinates(grdat_x), labels = parse(text = grdat_x$labels),
-#          pos = grdat_x$pos, offset = grdat_x$offset, ...)
-# }

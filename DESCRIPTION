@@ -1,12 +1,12 @@
 Package: graticule
 Type: Package
-Title: Create Graticule
+Title: Graticule Lines for Maps
 Version: 0.0.1
-Date: 2015-05-04
 Authors@R: person("Michael D.","Sumner", role = c("aut", "cre"), email =
     "mdsumner@gmail.com")
 Description: Create graticule lines.
 License: GPL-3
 LazyData: TRUE
 Depends: sp
+Suggests: rgdal
 Suggests: testhat
