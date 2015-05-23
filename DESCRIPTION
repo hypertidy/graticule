@@ -8,5 +8,4 @@ Description: Create graticule lines.
 License: GPL-3
 LazyData: TRUE
 Depends: sp
-Suggests: rgdal
-Suggests: testhat
+Suggests: rgdal, testhat
