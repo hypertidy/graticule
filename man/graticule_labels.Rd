@@ -4,22 +4,33 @@
 \alias{graticule_labels}
 \title{Create graticule labels.}
 \usage{
-graticule_labels(easts, norths, xlines, ylines, proj = NULL)
+graticule_labels(lons, lats, xline, yline, proj = NULL)
 }
 \arguments{
-\item{easts}{longitudes for meridional labels}
+\item{lons}{longitudes for meridional labels}
 
-\item{norths}{latitudes for parallel labels}
+\item{lats}{latitudes for parallel labels}
 
-\item{xlines}{meridian/s for placement of parallel labels}
+\item{xline}{meridian/s for placement of parallel labels}
 
-\item{ylines}{parallel/s for placement of meridian labels}
+\item{yline}{parallel/s for placement of meridian labels}
+
+\item{proj}{optional proj.4 string for output object}
 }
 \description{
-Create graticule labels.
+Returns a set of points with labels, for plotting in conjuction with \code{\link{graticule}}.
+}
+\details{
+SpatialPoints are returned in the projection of \code{proj} if given, or longlat / WGS84.
 }
 \examples{
-plot(graticule(easts = c(100, 120, 160, 180), norths = c(-80,-70,-60, -50,-45, -30),  proj = "+proj=lcc +lon_0=150 +lat_0=-80"))
-op <- par(xpd = NA); text(labs, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2);par(op)
+xx <- c(100, 120, 160, 180)
+yy <- c(-80,-70,-60, -50,-45, -30)
+prj <- "+proj=lcc +lon_0=150 +lat_0=-80"
+plot(graticule(lons = xx, lats = yy,  proj = prj))
+labs <- graticule_labels(lons = xx, lats = yy, xline = 100, yline = -80,  proj = prj)
+op <- par(xpd = NA)
+text(labs, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2)
+par(op)
 }
 

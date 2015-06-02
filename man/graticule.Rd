@@ -6,26 +6,33 @@
 \alias{graticule-package}
 \title{graticule: graticule lines for maps}
 \usage{
-graticule(easts, norths, ndiscr = 60, xlim, ylim, proj = NULL)
+graticule(lons, lats, nverts = 60, xlim, ylim, proj = NULL)
 }
 \arguments{
-\item{easts}{longitudes for meridional lines}
+\item{lons}{longitudes for meridional lines}
 
-\item{norths}{latitudes for parallel lines}
+\item{lats}{latitudes for parallel lines}
 
-\item{ndiscr}{number of discrete vertices for each segment}
+\item{nverts}{number of discrete vertices for each segment}
 
 \item{xlim}{maximum range of parallel lines}
 
 \item{ylim}{maximum range of meridional lines}
+
+\item{proj}{optional proj.4 string for output object}
 }
 \description{
 graticule: graticule lines for maps
 
-Create a graticule.
+Specify the creation of lines along meridians by specifying their placement
+at particular \code{lons} (longitudes) and \code{lats} (latitudes) and their extents
+with \code{xlim} (extent of parallel line in longitude) and \code{ylim} (extent of meridional line in latitude).
+}
+\details{
+Provide a valid PROJ.4 string to return the graticule lines in this projection. If this is not specified the graticule
+lines are returned in their original longlat / WGS84.
 }
 \examples{
-\dontrun{
 library(rgdal)
 x <- as.matrix(expand.grid(x = seq(100, 240, by = 15), y = seq(-85, -30, by = 15)))
 prj <- "+proj=laea +lon_0=180 +lat_0=-70"
@@ -40,6 +47,11 @@ pg2 <- spTransform(g2, CRS(prj))
 plot(px, type = "n")
 plot(pg2, add = TRUE)
 
-}
+prj <- "+proj=laea +lon_0=0 +lat_0=-90 +ellps=WGS84"
+xx <- c(-120, -100, -80, -60, -40); yy <- c(-65, -55, -45)
+g3 <- graticule(xx, yy, ylim = c(-70, -30), proj = prj)
+g3labs <- graticule_labels(xx, c(-65, -45), xline = -85, yline = -30, proj = prj)
+plot(g3)
+text(g3labs, lab = parse(text = g3labs$lab))
 }
 
