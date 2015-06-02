@@ -94,3 +94,45 @@ graticule <- function(easts, norths, ndiscr = 60, xlim, ylim, proj = NULL) {
   #d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
 
 }
+
+#' Create graticule labels.
+#'
+#' @param easts longitudes for meridional labels
+#' @param norths latitudes for parallel labels
+#' @param xlines meridian/s for placement of parallel labels
+#' @param ylines parallel/s for placement of meridian labels
+#' @export
+#' @importFrom sp degreeLabelsEW degreeLabelsNS coordinates<- proj4string
+#' @examples
+#' plot(graticule(easts = c(100, 120, 160, 180), norths = c(-80,-70,-60, -50,-45, -30),  proj = "+proj=lcc +lon_0=150 +lat_0=-80"))
+#' op <- par(xpd = NA); text(labs, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2);par(op)
+graticule_labels <- function(easts, norths, xlines, ylines, proj = NULL) {
+  if (is.null(proj)) proj <- lonlatp4()
+  proj <- as.character(proj)  ## in case we are given CRS
+  trans <- FALSE
+  if (!raster:::isLonLat(proj)) trans <- TRUE
+  if (missing(easts)) {
+    #usr <- par("usr")
+    #if (all(usr == c(0, 1, 0, 1))) {
+    easts <- seq(-180, 180, by = 15)
+  }
+  if (missing(norths)) {
+    norths <- seq(-90, 90, by = 10)
+  }
+  if (missing(xlines)) xlines <- easts
+  if (missing(ylines)) ylines <- norths
+
+  lonlabs <- expand.grid(x = easts, y = ylines)
+  lonlabs$lab <-  degreeLabelsEW(lonlabs$x)
+  lonlabs$islon <- TRUE
+  latlabs <- expand.grid(x = xlines, y = norths)
+  latlabs$lab <- degreeLabelsNS(latlabs$y)
+  latlabs$islon <- FALSE
+  l <- rbind(lonlabs, latlabs)
+  coordinates(l) <- 1:2
+  proj4string(l) <- CRS(lonlatp4())
+  if (trans) {
+    l <- rgdal:::spTransform.SpatialPointsDataFrame(l, CRS(proj))
+  }
+  l
+}
