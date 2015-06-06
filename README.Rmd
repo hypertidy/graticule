@@ -124,7 +124,7 @@ The **rgdal** function *llgridlines* will draw a graticule on a map but has a fe
 
 Many of these limitations can be worked around, especially by leveraging tools in the **raster** package but it's not particularly elegant. 
 
-Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a **llgridlines** graticule. 
+Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a **llgridlines** graticule. (Note that Heard, Macquarie and Lord Howe Islands dictate the bounds of our plot here.)
 
 ```{r}
 plot(pmap)
