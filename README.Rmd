@@ -30,6 +30,7 @@ library(rgdal)
 library(raster)
 library(rworldmap)
 data(countriesLow)
+llproj <- projection(countriesLow)
 library(graticule)
 map<- subset(countriesLow, SOVEREIGNT == "Australia")
 
@@ -122,6 +123,54 @@ The **rgdal** function *llgridlines* will draw a graticule on a map but has a fe
 - relies on a projected object with sufficient verticular density. 
 
 Many of these limitations can be worked around, especially by leveraging tools in the **raster** package but it's not particularly elegant. 
+
+Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a **llgridlines** graticule. 
+
+```{r}
+plot(pmap)
+llgridlines(pmap)
+```
+
+We cannot easily modify the lines to be only in our local area, since llgridlines over rides ours inputs with the bounding box of the 
+overall object. 
+
+```{r}
+plot(pmap)
+lons <- seq(140, 150, length = 5)
+lats <- seq(-40, -35, length = 6)
+llgridlines(pmap, easts = lons, norths = lats)
+```
+
+What we can do is crop the object, or create a new one with the overall extents of our region of interest.  This is much closer to what
+I want but still I need to fiddle to get it just right. 
+
+```{r}
+op <- par(xpd = NA)
+ex <- as(extent(range(lons), range(lats)), "SpatialPolygons")
+projection(ex) <- llproj
+pex <- spTransform(ex, CRS(projection(pmap)))
+plot(extent(pex), type = "n", axes = FALSE, xlab = "", ylab = "", asp = 1)
+plot(pmap, add = TRUE)
+llgridlines(pex, easts = lons, norths = lats)
+par(op)
+
+```
+
+How about the polar example?  This is not bad, but the default number of vertices is not sufficient and we don't get a sensible set of meridians. 
+
+```{r}
+plot(ice, axes = FALSE)
+##llgridlines(ice)  does not understand a raster
+llgridlines(as(ice, "SpatialPoints"))
+```
+
+Try again, why can't I get a line at -180/180 and 80S? 
+
+```{r}
+plot(ice, axes = FALSE)
+llgridlines(as(ice, "SpatialPoints"), easts = c(-180, -120, -60, 0, 60, 120), norths = c(-80, -70, -60, -50), ndiscr = 50)
+```
+
 
 ## Comparison to **mapGrid** in **oce**
 
