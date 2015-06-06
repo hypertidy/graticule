@@ -42,12 +42,15 @@ lonlatp4 <- function() {
 #'
 #' Provide a valid PROJ.4 string to return the graticule lines in this projection. If this is not specified the graticule
 #' lines are returned in their original longlat / WGS84.
+#'
+#' The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}.
 #' @param lons longitudes for meridional lines
 #' @param lats latitudes for parallel lines
 #' @param nverts number of discrete vertices for each segment
 #' @param xlim maximum range of parallel lines
 #' @param ylim maximum range of meridional lines
 #' @param proj optional proj.4 string for output object
+#' @param tiles if \code{TRUE} return polygons as output
 #' @export
 #'
 #' @examples
@@ -73,9 +76,18 @@ lonlatp4 <- function() {
 #' plot(g3)
 #' text(g3labs, lab = parse(text = g3labs$lab))
 #'
+#' ## polygonal graticule on Orthographic projection
+#' xx <- seq(-90, 90, length = 10) + 147
+#' yy <- seq(-90, 90, length = 5)
+#'  g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147", tiles = TRUE)
+#'  plot(g, col = c("black", "grey"))
+#'  \dontrun{
+#'  library(maptools); data(wrld_simpl); w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(projection(g)))
+#'  plot(w, add = TRUE, border = "dodgerblue")
+#'  }
 #' @importFrom raster isLonLat
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
-graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL) {
+graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
@@ -88,7 +100,14 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL) {
   if (missing(lats)) {
       lats <- seq(-90, 90, by = 10)
   }
-
+if (tiles) {
+  ## build a raster and return the polygons
+  rr <- raster(extent(range(lons), range(lats)), nrows = length(lons), ncols = length(lats), crs = lonlatp4())
+  values(rr) <- seq(ncell(rr))
+  pp <- rasterToPolygons(rr, dissolve = TRUE, n = 16)
+  if (trans) pp <- sp::spTransform(pp, sp::CRS(proj))
+ return(pp)
+}
   if (missing(xlim)) xlim <- range(lons)
   if (missing(ylim)) ylim <- range(lats)
   xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE)

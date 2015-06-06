@@ -1,0 +1,65 @@
+commit be5352072ab0ed164532d0c6cdf38ac933605e46
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Wed Jun 3 00:09:18 2015 +1000
+
+    clean up
+
+commit 345d26d4e0abd594f01ddc570f6fd11835dcc259
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Wed Jun 3 00:08:31 2015 +1000
+
+    longer Description
+
+commit 1db64bfa8af42540cd696ad6b4c8132b01bc341a
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Wed Jun 3 00:08:18 2015 +1000
+
+    clean up
+
+commit 65ef4c8a041f96cf09d6d0864b4199dd717f2c96
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Wed Jun 3 00:08:08 2015 +1000
+
+    added labels, changed argument names
+
+commit 7c2cf7905402dd9339b61a390cfa8d18567a85f0
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Tue Jun 2 22:44:16 2015 +1000
+
+    labels
+
+commit 6c978824915d2d7e529ccf21686bc5edd47c8cbe
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat May 23 10:44:45 2015 -1000
+
+    fix malformed Suggests
+
+commit bf00f2e2f1cf1786ea9ff109831cbedca3e8063d
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Thu May 21 15:32:40 2015 -1000
+
+    bug fix for spTransform
+
+commit fb65c81f4867a600dafff9c9560db6447df89638
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Wed May 6 11:13:22 2015 -1000
+
+    fix id increment
+
+commit 134f34bb770fcd4d4ed49acc3ababbe96a9fa0e7
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Wed May 6 00:58:18 2015 -1000
+
+    work without trip hack
+
+commit 825ad267ac10fe975083421303c90b1217bc0213
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Mon May 4 15:41:18 2015 -1000
+
+    simple tests
+
+commit 07f2f39677604cf7d0a481a76b3b54e5b718b8c0
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Mon May 4 15:26:53 2015 -1000
+
+    basics working
