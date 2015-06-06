@@ -88,16 +88,22 @@ Continuing from the sea ice example, build the graticule grid as actual polygons
 ``` r
 polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = projection(ice), tiles = TRUE)
 #> Loading required namespace: rgeos
-labs <- graticule_labels(meridians, parallels,  proj = projection(ice), yline = max(parallels) - 15, xline = 80)
+centroids <- project(coordinates(polargrid), projection(ice), inv = TRUE)
+labs <- graticule_labels(meridians, parallels,  proj = projection(ice))
+labs <- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))
+labs <- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix
 cols <- sample(colors(), nrow(polargrid))
 op <- par(mar = rep(0, 4))
 plot(polargrid, col  = cols, bg = "black")
-text(labs, lab = parse(text = labs$lab), col = sample(cols, nrow(labs)), family = "mono", cex = 2)
+
+text(labs[labs$islon, ], lab = parse(text = labs$lab[labs$islon]), col = "black",  cex = .55, pos = 3)
+text(labs[!labs$islon, ], lab = parse(text = labs$lab[!labs$islon]), col = "black", cex = .55, pos = 1)
 ```
 
 ![](README-unnamed-chunk-4-1.png)
 
 ``` r
+
 par(op)
 ```
 
