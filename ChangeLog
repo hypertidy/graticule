@@ -1,3 +1,112 @@
+commit e8ba60a02390684c3a15875e3664852d2a58c97f
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 23:20:14 2015 +1000
+
+    news
+
+commit 1219fdc6c353bd54d9ca3d069b22dec0b0ac8146
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 23:18:26 2015 +1000
+
+    clarification of data sets
+
+commit 2d2ca373e83fb2798e0f4ae34a858e3306d22fcd
+Author: Michael Sumner <mdsumner@gmail.com.com>
+Date:   Sat Jun 6 23:05:35 2015 +1000
+
+    updates after check
+
+commit 2402a6ab0214c4de29a3efcbff3eec69198f2109
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 22:46:48 2015 +1000
+
+    tidy, links
+
+commit a71188ffdfbc9b6f04ca65158143bc237f054d7b
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 22:25:13 2015 +1000
+
+    more notes on context
+
+commit fb1cf1a039f719fe3e67fd81165f5ea0e8c41a06
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 22:15:18 2015 +1000
+
+    New examples for comparing with oce
+
+commit 2fca5841ed1992f4e3baba508157e9c756a4c74a
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 17:06:56 2015 +1000
+
+    island note
+
+commit b15799116d94c530fab286d37278869ec14a2b4e
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 16:57:10 2015 +1000
+
+    more examples
+
+commit 49ff4cad9c49fa4ca45fafb6f6913973d8b82917
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 15:37:10 2015 +1000
+
+    update labels
+
+commit fce746e2e3188ae251d7318c7ed49d214a425a5e
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 15:13:48 2015 +1000
+
+    a tiles example
+
+commit 02c022535883a4121971603ffded392a86c9b9a1
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 15:13:36 2015 +1000
+
+    fixed a bug for tiles
+
+commit 303bdf63803bf2a1a4d128f51128d33552a0628c
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 14:57:55 2015 +1000
+
+    description added
+
+commit 214e368ed6ec2aebd140171a385d257121491c02
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 14:52:42 2015 +1000
+
+    polar example
+
+commit 8dcabe29235d35158b1085fa9fe8f632c7438834
+Merge: 31c14aa 642d1ad
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 14:28:51 2015 +1000
+
+    Merge branch 'master' of https://github.com/mdsumner/graticule
+
+commit 31c14aae30e35b5778b9851bf57c58787de2d66c
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 14:27:29 2015 +1000
+
+    title
+
+commit 642d1ad2a0e8076632882756062838d271f6722d
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 14:27:29 2015 +1000
+
+    title
+
+commit 8ea2a5283431f20fb9d7c130b6560cfbc4563f56
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 14:25:52 2015 +1000
+
+    readme.Rmd
+
+commit 56554d3e449609ce5f114ac65bc437f286ebcb4c
+Author: Michael Sumner <mdsumner@gmail.com>
+Date:   Sat Jun 6 13:38:38 2015 +1000
+
+    change log
+
 commit dd61e0c34d7a461bc28856536a36927deabc6fc4
 Author: Michael Sumner <mdsumner@gmail.com>
 Date:   Sat Jun 6 13:38:03 2015 +1000
