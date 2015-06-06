@@ -1,10 +1,30 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Graticules for R
-================
+graticule
+=========
 
-Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The **graticule** package provides the flexibiility to create and draw these lines by explicit specification by the user.
+Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the flexibiility to create and draw these lines by explicit specification by the user.
 
-A simple example uses data from **rworldmap**.
+Installation
+============
+
+The graticule package is on GitHub, and can be installed like this:
+
+    ```R
+    if (packageVersion("devtools") < 1.6) {
+      install.packages("devtools")
+    }
+    devtools::install_github("mdsumner/graticule")
+    ```
+
+Known issues
+------------
+
+o There's work need for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines
+
+Examples
+========
+
+A simple example uses data from rworldmap.
 
 ``` r
 library(rgdal)
@@ -84,7 +104,7 @@ title(sub = projection(ice), cex.sub = 0.6)
 Create the graticule as polygons
 --------------------------------
 
-Continuing from the sea ice example, build the graticule grid as actual polygons. Necessarily the xlim/ylim option is ignored since we otherwise have not specified sensibly closed polygonal rings.
+Continuing from the sea ice example, build the graticule grid as actual polygons. Necessarily the `xlim/ylim` option is ignored since we have not specified sensibly closed polygonal rings where there are under or over laps.
 
 ``` r
 polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = projection(ice), tiles = TRUE)
@@ -108,18 +128,18 @@ text(labs[!labs$islon, ], lab = parse(text = labs$lab[!labs$islon]), col = "blac
 par(op)
 ```
 
-Comparison to tools in **sp** and **rgdal**
--------------------------------------------
+Comparison to tools in sp and rgdal
+-----------------------------------
 
-The **rgdal** function *llgridlines* will draw a graticule on a map but has a few limitations.
+The rgdal function `llgridlines()` will draw a graticule on a map but has a few limitations.
 
 -   no control over the exact meridian and parallel lines to draw
 -   the extent of lines is not independent of their perpendicular counterparts
 -   relies on a projected object with sufficient verticular density.
 
-Many of these limitations can be worked around, especially by leveraging tools in the **raster** package but it's not particularly elegant.
+Many of these limitations can be worked around, especially by leveraging tools in the raster package but it's not particularly elegant. Interestingly `mapGrid` in oce seems to share some of the same limitations, but I need to explore that more before being sure about the details.
 
-Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a **llgridlines** graticule. (Note that Heard, Macquarie and Lord Howe Islands dictate the bounds of our plot here.)
+Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a `llgridlines` graticule. (Note that there's a fair region around the main land mass of Australia here, due to Heard Island, Macquarie Island and Lord Howe Island driving the bounds of this map.)
 
 ``` r
 plot(pmap)
@@ -128,7 +148,7 @@ llgridlines(pmap)
 
 ![](README-unnamed-chunk-5-1.png)
 
-We cannot easily modify the lines to be only in our local area, since llgridlines over rides ours inputs with the bounding box of the overall object.
+We cannot easily modify the lines to be only in our local area, since `llgridlines` overrides our inputs with the bounding box of the overall object.
 
 ``` r
 plot(pmap)
@@ -176,10 +196,10 @@ llgridlines(as(ice, "SpatialPoints"), easts = c(-180, -120, -60, 0, 60, 120), no
 
 ![](README-unnamed-chunk-9-1.png)
 
-Comparison to **mapGrid** in **oce**
-------------------------------------
+Comparison to **mapGrid** in oce
+--------------------------------
 
-The **oce** package has a lot of really neat map projection tools, but it works rather differently from the *Spatial* and *raster* tools in R. We need to drive the creation of the plot from the start with `mapPlot`, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. There needs to be a wide review of all this stuff to consolidate across many different packages . . .
+The oce package has a lot of really neat map projection tools, but it works rather differently from the *Spatial* and *raster* tools in R. We need to drive the creation of the plot from the start with `mapPlot`, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. There needs to be a wide review of all this stuff to consolidate across many different packages . . .
 
 Here is our map of Victoria.
 
@@ -195,7 +215,7 @@ plot(pmap, add = TRUE)
 
 ![](README-unnamed-chunk-10-1.png)
 
-Here is our polar map, this is good I haven't explore **oce** enough yet to do it justice. For bonus points we add **mapTissot**, need to check this out a lot more.
+Here is our polar map, this is good I haven't explore oce enough yet to do it justice. For bonus points we add `mapTissot()`, which should be in the basic toolkit of all intrepid R mappers.
 
 ``` r
 ipts <- coordinates(spTransform(xyFromCell(ice, sample(ncell(ice), 1000), spatial = TRUE), CRS(llproj)))
@@ -208,10 +228,12 @@ mapTissot()
 
 ![](README-unnamed-chunk-11-1.png)
 
+Also see here for another implementation of the Tissot Indicatrix in R by user [whuber on GIS StackExchange](http://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection).
+
 Notes
 -----
 
-It could be said that effort should be shared with the *sp* and *rgdal* projects to improve the functionality for the `llgridlines` and its worker functions `gridlines` and `gridat` in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on **dplyr**, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in *sp*, *raster*, *maptools*, *fields*, *oce* and many others. It is time for a new review, analogous to the effor that built *sp* in ca. 2002.
+It should be said that efforts here should be shared with the sp and rgdal projects to improve the functionality for the `llgridlines` and its worker functions `gridlines` and `gridat` in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on dplyr, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in sp, raster, maptools, fields, oce and many others. It is time for a new review, analogous to the effort that built sp in ca. 2002.
 
 ### Terminology
 
@@ -219,7 +241,53 @@ I tend to use the same terminology as used within [Manifold System](http://www.m
 
 > To identify the location of points on the Earth, a graticule or network of longitude and latitude lines has been superimposed on the surface. They are commonly referred to as meridians and parallels, respectively.
 
+"Verticular density" is kind of a joke, but I like it. YMMV
+
 References
 ----------
 
 Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.
+
+Environment
+-----------
+
+``` r
+devtools::session_info()
+#> Session info --------------------------------------------------------------
+#>  setting  value                       
+#>  version  R version 3.2.0 (2015-04-16)
+#>  system   x86_64, linux-gnu           
+#>  ui       X11                         
+#>  language (EN)                        
+#>  collate  en_US.UTF-8                 
+#>  tz       <NA>
+#> Packages ------------------------------------------------------------------
+#>  package    * version date       source        
+#>  devtools   * 1.7.0   2015-01-17 CRAN (R 3.2.0)
+#>  digest     * 0.6.8   2014-12-31 CRAN (R 3.2.0)
+#>  evaluate   * 0.7     2015-04-21 CRAN (R 3.2.0)
+#>  fields     * 8.2-1   2015-02-28 CRAN (R 3.2.0)
+#>  foreign    * 0.8-63  2015-02-20 CRAN (R 3.1.2)
+#>  formatR    * 1.2     2015-04-21 CRAN (R 3.2.0)
+#>  graticule    0.0.2   2015-06-06 local         
+#>  gsw          1.0-3   2015-01-19 CRAN (R 3.2.0)
+#>  htmltools  * 0.2.6   2014-09-08 CRAN (R 3.2.0)
+#>  knitr      * 1.10.5  2015-05-06 CRAN (R 3.2.0)
+#>  lattice    * 0.20-31 2015-03-30 CRAN (R 3.1.3)
+#>  magrittr   * 1.5     2014-11-22 CRAN (R 3.2.0)
+#>  maps       * 2.3-9   2014-09-22 CRAN (R 3.2.0)
+#>  maptools   * 0.8-36  2015-04-24 CRAN (R 3.2.0)
+#>  oce          0.9-17  2015-05-22 CRAN (R 3.2.0)
+#>  raster       2.4-6   2015-06-01 local         
+#>  Rcpp       * 0.11.6  2015-05-01 CRAN (R 3.2.0)
+#>  rgdal        0.9-2   2015-03-15 CRAN (R 3.1.3)
+#>  rgeos      * 0.3-8   2014-09-21 CRAN (R 3.2.0)
+#>  rmarkdown  * 0.6.1   2015-05-07 CRAN (R 3.2.0)
+#>  rstudioapi * 0.3.1   2015-04-07 CRAN (R 3.2.0)
+#>  rworldmap    1.3-1   2013-12-12 CRAN (R 3.2.0)
+#>  sp           1.1-0   2015-04-24 CRAN (R 3.2.0)
+#>  spam       * 1.0-1   2014-09-09 CRAN (R 3.2.0)
+#>  stringi    * 0.4-1   2014-12-14 CRAN (R 3.2.0)
+#>  stringr    * 1.0.0   2015-04-30 CRAN (R 3.2.0)
+#>  yaml       * 2.1.13  2014-06-12 CRAN (R 3.2.0)
+```

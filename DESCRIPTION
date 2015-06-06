@@ -11,4 +11,4 @@ License: GPL-3
 LazyData: TRUE
 Depends: sp
 Imports: raster
-Suggests: rgdal, testthat
+Suggests: devtools, rgdal, testthat
