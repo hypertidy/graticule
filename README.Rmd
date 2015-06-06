@@ -66,7 +66,9 @@ par(op)
 
 ## A polar example
 
-Download some ice concentration data plot with a graticule. 
+Download some ice concentration data and plot with a graticule. This is not the prettiest map
+it could be, the example is showing how we have control over exactly where the lines are
+created. We can build the lines anywhere, not necessarily at regular intervals or rounded numbers, and we can over or under extend the parallels relative to the meridians and vice versa. 
 
 ```{r,message=FALSE}
 library(raster)
@@ -79,7 +81,7 @@ download.file(icefile, tfile, mode = "wb")
 ice <- raster(tfile)
 
 meridians <- seq(-180, 160, by = 20)
-parallels <- c(-80, -73, -68, -55, -45)
+parallels <- c(-80, -73.77, -68, -55, -45)
 mlim <- c(-180, 180)
 plim <- c(-88, -50)
 grat <- graticule(lons = meridians, lats = parallels, xlim = mlim, ylim = plim, proj = projection(ice))
@@ -87,6 +89,8 @@ labs <- graticule_labels(meridians, parallels, xline = -45, yline = -60, proj = 
 plot(ice, axes = FALSE)
 plot(grat, add = TRUE, lty = 3)
 text(labs, lab = parse(text= labs$lab), col= c("firebrick", "darkblue")[labs$islon + 1], cex = 0.85)
+title(sprintf("Sea ice concentration %s", gsub(".bin", "", basename(tfile))), cex.main = 0.8)
+title(sub = projection(ice), cex.sub = 0.6)
 ```
 
 ## Comparison to to tools in **sp** and **rgdal**
