@@ -63,6 +63,32 @@ text(subset(labs, !labs$islon), lab = parse(text = labs$lab[!labs$islon]), pos =
 
 par(op)
 ```
+
+## A polar example
+
+Download some ice concentration data plot with a graticule. 
+
+```{r,message=FALSE}
+library(raster)
+library(graticule)
+library(rgdal)
+icefile <- "ftp://sidads.colorado.edu/pub/DATASETS/nsidc0081_nrt_nasateam_seaice/south/nt_20150530_f17_nrt_s.bin"
+tfile <- file.path(tempdir(), basename(icefile))
+download.file(icefile, tfile, mode = "wb")
+
+ice <- raster(tfile)
+
+meridians <- seq(-180, 160, by = 20)
+parallels <- c(-80, -73, -68, -55, -45)
+mlim <- c(-180, 180)
+plim <- c(-88, -50)
+grat <- graticule(lons = meridians, lats = parallels, xlim = mlim, ylim = plim, proj = projection(ice))
+labs <- graticule_labels(meridians, parallels, xline = -45, yline = -60, proj = projection(ice))
+plot(ice, axes = FALSE)
+plot(grat, add = TRUE, lty = 3)
+text(labs, lab = parse(text= labs$lab), col= c("firebrick", "darkblue")[labs$islon + 1], cex = 0.85)
+```
+
 ## Comparison to to tools in **sp** and **rgdal**
 
 The **rgdal** function *llgridlines* will draw a graticule on a map but has a few limitations. 
