@@ -79,7 +79,7 @@ Download some sea ice concentration data and plot with a graticule. These passiv
 library(raster)
 library(graticule)
 library(rgdal)
-icefile <- "ftp://sidads.colorado.edu/pub/DATASETS/nsidc0081_nrt_nasateam_seaice/south/nt_20150530_f17_nrt_s.bin"
+icefile <- "ftp://sidads.colorado.edu/pub/DATASETS/nsidc0051_gsfc_nasateam_seaice/final-gsfc/south/daily/2014/nt_20140320_f17_v01_s.bin"
 tfile <- file.path(tempdir(), basename(icefile))
 if (!file.exists(tfile)) download.file(icefile, tfile, mode = "wb")
 
