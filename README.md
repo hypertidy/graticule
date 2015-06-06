@@ -2,7 +2,7 @@
 graticule
 =========
 
-Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the flexibiility to create and draw these lines by explicit specification by the user.
+Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the tools to create and draw these lines by explicit specification by the user. This provides a good compromise between high-level automation and the flexibility to drive the low level details as needed, using base graphics in R.
 
 Installation
 ============
@@ -19,12 +19,12 @@ The graticule package is on GitHub, and can be installed like this:
 Known issues
 ------------
 
-o There's work need for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines
+o There's work needed for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines
 
 Examples
 ========
 
-A simple example uses data from rworldmap.
+A simple example uses data from rworldmap to build a map around the state of Victoria in Australia. Victoria uses a local Lambert Conformal Conic projection that was introduced while the shift to GDA94 was implemented, to reduce complications due to working with more than one UTM zone for the state.
 
 ``` r
 library(rgdal)
@@ -67,14 +67,13 @@ text(subset(labs, !labs$islon), lab = parse(text = labs$lab[!labs$islon]), pos =
 ![](README-unnamed-chunk-2-1.png)
 
 ``` r
-
 par(op)
 ```
 
 A polar example
 ---------------
 
-Download some ice concentration data and plot with a graticule. This is not the prettiest map it could be, the example is showing how we have control over exactly where the lines are created. We can build the lines anywhere, not necessarily at regular intervals or rounded numbers, and we can over or under extend the parallels relative to the meridians and vice versa.
+Download some sea ice concentration data and plot with a graticule. These passive microwave data are defined on a Polar Stereographic grid on the Hughes ellipsoid (predating WGS84), and there are daily files available since 1978. This is not the prettiest map, but the example is showing how we have control over exactly where the lines are created. We can build the lines anywhere, not necessarily at regular intervals or rounded numbers, and we can over or under extend the parallels relative to the meridians and vice versa.
 
 ``` r
 library(raster)
@@ -116,7 +115,6 @@ labs <- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix
 cols <- sample(colors(), nrow(polargrid))
 op <- par(mar = rep(0, 4))
 plot(polargrid, col  = cols, bg = "black")
-
 text(labs[labs$islon, ], lab = parse(text = labs$lab[labs$islon]), col = "black",  cex = .55, pos = 3)
 text(labs[!labs$islon, ], lab = parse(text = labs$lab[!labs$islon]), col = "black", cex = .55, pos = 1)
 ```
@@ -124,7 +122,6 @@ text(labs[!labs$islon, ], lab = parse(text = labs$lab[!labs$islon]), col = "blac
 ![](README-unnamed-chunk-4-1.png)
 
 ``` r
-
 par(op)
 ```
 
@@ -199,7 +196,7 @@ llgridlines(as(ice, "SpatialPoints"), easts = c(-180, -120, -60, 0, 60, 120), no
 Comparison to **mapGrid** in oce
 --------------------------------
 
-The oce package has a lot of really neat map projection tools, but it works rather differently from the *Spatial* and *raster* tools in R. We need to drive the creation of the plot from the start with `mapPlot`, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. There needs to be a wide review of all this stuff to consolidate across many different packages . . .
+The oce package has a lot of really neat map projection tools, but it works rather differently from the *Spatial* and *raster* tools in R. We need to drive the creation of the plot from the start with `mapPlot`, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. (My use of oce is inexpert, I'm not across much of the details yet so I may well be off-track with some things here).
 
 Here is our map of Victoria.
 
