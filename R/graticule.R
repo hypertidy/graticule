@@ -102,7 +102,7 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = 
   }
 if (tiles) {
   ## build a raster and return the polygons
-  rr <- raster(extent(range(lons), range(lats)), nrows = length(lons), ncols = length(lats), crs = lonlatp4())
+  rr <- raster(extent(range(lons), range(lats)), nrows = length(lats), ncols = length(lons), crs = lonlatp4())
   values(rr) <- seq(ncell(rr))
   pp <- rasterToPolygons(rr, dissolve = TRUE, n = 16)
   if (trans) pp <- sp::spTransform(pp, sp::CRS(proj))
