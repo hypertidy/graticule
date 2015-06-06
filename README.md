@@ -80,6 +80,27 @@ title(sub = projection(ice), cex.sub = 0.6)
 
 ![](README-unnamed-chunk-3-1.png)
 
+Create the graticule as polygons
+--------------------------------
+
+Continuing from the sea ice example, build the graticule grid as actual polygons. Necessarily the xlim/ylim option is ignored since we otherwise have not specified sensibly closed polygonal rings.
+
+``` r
+polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = projection(ice), tiles = TRUE)
+#> Loading required namespace: rgeos
+labs <- graticule_labels(meridians, parallels,  proj = projection(ice), yline = max(parallels) - 15, xline = 80)
+cols <- sample(colors(), nrow(polargrid))
+op <- par(mar = rep(0, 4))
+plot(polargrid, col  = cols, bg = "black")
+text(labs, lab = parse(text = labs$lab), col = sample(cols, nrow(labs)), family = "mono", cex = 2)
+```
+
+![](README-unnamed-chunk-4-1.png)
+
+``` r
+par(op)
+```
+
 Comparison to to tools in **sp** and **rgdal**
 ----------------------------------------------
 
