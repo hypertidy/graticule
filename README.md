@@ -62,7 +62,7 @@ library(graticule)
 library(rgdal)
 icefile <- "ftp://sidads.colorado.edu/pub/DATASETS/nsidc0081_nrt_nasateam_seaice/south/nt_20150530_f17_nrt_s.bin"
 tfile <- file.path(tempdir(), basename(icefile))
-download.file(icefile, tfile, mode = "wb")
+if (!file.exists(tfile)) download.file(icefile, tfile, mode = "wb")
 
 ice <- raster(tfile)
 
@@ -108,8 +108,8 @@ text(labs[!labs$islon, ], lab = parse(text = labs$lab[!labs$islon]), col = "blac
 par(op)
 ```
 
-Comparison to to tools in **sp** and **rgdal**
-----------------------------------------------
+Comparison to tools in **sp** and **rgdal**
+-------------------------------------------
 
 The **rgdal** function *llgridlines* will draw a graticule on a map but has a few limitations.
 
@@ -179,4 +179,43 @@ llgridlines(as(ice, "SpatialPoints"), easts = c(-180, -120, -60, 0, 60, 120), no
 Comparison to **mapGrid** in **oce**
 ------------------------------------
 
-This is good, have not explored in detail yet . . .
+The **oce** package has a lot of really neat map projection tools, but it works rather differently from the *Spatial* and *raster* tools in R. We need to drive the creation of the plot from the start with `mapPlot`, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. There needs to be a wide review of all this stuff to consolidate across many different packages . . .
+
+Here is our map of Victoria.
+
+``` r
+library(oce)
+## we need to hop the crevasse into another world
+pp <- coordinates(as(as(map, "SpatialLines"), "SpatialPoints"))
+mapPlot(pp[,1], pp[,2], projection = projection(pmap), longitudelim = xl, latitudelim = yl, type = "n", grid = FALSE)
+mapGrid(longitude = lons, latitude = lats)
+## and to prove that all is well in the world
+plot(pmap, add = TRUE)
+```
+
+![](README-unnamed-chunk-10-1.png)
+
+Here is our polar map, this is good I haven't explore **oce** enough yet to do it justice. For bonus points we add **mapTissot**, need to check this out a lot more.
+
+``` r
+ipts <- coordinates(spTransform(xyFromCell(ice, sample(ncell(ice), 1000), spatial = TRUE), CRS(llproj)))
+mapPlot(ipts[,1], ipts[,2], projection = projection(ice), type = "n", grid = FALSE)
+
+plot(ice, add = TRUE)
+mapGrid(10, 15)
+mapTissot()
+```
+
+![](README-unnamed-chunk-11-1.png)
+
+Terminology
+-----------
+
+I tend to use the same terminology as used within [Manifold System](http://www.manifold.net) *because it's so awesome* and that's where I first learnt about most of these concepts. In my experience not many people use the term *graticule* in this way, so take it from the master himself on page 8 (Snyder, 1987):
+
+> To identify the location of points on the Earth, a graticule or network of longitude and latitude lines has been superimposed on the surface. They are commonly referred to as meridians and parallels, respectively.
+
+References
+----------
+
+Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.
