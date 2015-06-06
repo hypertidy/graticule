@@ -167,7 +167,7 @@ llgridlines(as(ice, "SpatialPoints"))
 
 ![](README-unnamed-chunk-8-1.png)
 
-Try again, why can't I get a line at -180/180 and 80S?
+Try again, we increase the verticular density, but still I can't get a line at -180/180 and 80S.
 
 ``` r
 plot(ice, axes = FALSE)
@@ -208,8 +208,12 @@ mapTissot()
 
 ![](README-unnamed-chunk-11-1.png)
 
-Terminology
------------
+Notes
+-----
+
+It could be said that effort should be shared with the *sp* and *rgdal* projects to improve the functionality for the `llgridlines` and its worker functions `gridlines` and `gridat` in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on **dplyr**, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in *sp*, *raster*, *maptools*, *fields*, *oce* and many others. It is time for a new review, analogous to the effor that built *sp* in ca. 2002.
+
+### Terminology
 
 I tend to use the same terminology as used within [Manifold System](http://www.manifold.net) *because it's so awesome* and that's where I first learnt about most of these concepts. In my experience not many people use the term *graticule* in this way, so take it from the master himself on page 8 (Snyder, 1987):
 
