@@ -10,5 +10,5 @@ Description: Create graticule lines and labels for maps. Control the creation of
 License: GPL-3
 LazyData: TRUE
 Depends: sp
-Imports: raster
+Imports: raster, gris
 Suggests: devtools, rgdal, testthat
