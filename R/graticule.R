@@ -87,9 +87,10 @@ lonlatp4 <- function() {
 #'  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(projection(g)))
 #'  plot(w, add = TRUE, border = "dodgerblue")
 #'  }
+#'  @importFrom gris bld2
 #' @importFrom raster isLonLat raster rasterToPolygons extent values<- ncell
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
-graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
+graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE, gris = FALSE) {
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
@@ -104,10 +105,11 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = 
   }
 if (tiles) {
   ## build a raster and return the polygons
-  rr <- raster::raster(extent(range(lons), range(lats)), nrows = length(lats), ncols = length(lons), crs = lonlatp4())
+  rr <- raster::raster(extent(range(lons), range(lats)), nrows = length(lats)-1, ncols = length(lons)-1, crs = lonlatp4())
   values(rr) <- seq(ncell(rr))
   pp <- raster::rasterToPolygons(rr, dissolve = TRUE, n = 16)
   if (trans) pp <- sp::spTransform(pp, sp::CRS(proj))
+  if (gris) return(bld2(pp))
  return(pp)
 }
   if (missing(xlim)) xlim <- range(lons)
