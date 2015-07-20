@@ -1,3 +1,9 @@
+    VERSION 0.0.3
+
+o upgraded for release
+
+o added ice file raw data for vignette
+
     VERSION 0.0.2
 
 o added tiles option to graticule to return polygons
