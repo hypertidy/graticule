@@ -1,11 +1,14 @@
 ---
 title: "Graticules for R"
 author: "Michael Sumner"
-date: 2015-06-06
-output:
-  md_document:
-    variant: markdown_github
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
+
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -92,10 +95,7 @@ Download some sea ice concentration data and plot with a graticule. These passiv
 library(raster)
 library(graticule)
 library(rgdal)
-icefile <- "ftp://sidads.colorado.edu/pub/DATASETS/nsidc0051_gsfc_nasateam_seaice/final-gsfc/south/daily/2014/nt_20140320_f17_v01_s.bin"
-tfile <- file.path(tempdir(), basename(icefile))
-if (!file.exists(tfile)) download.file(icefile, tfile, mode = "wb")
-
+tfile <- system.file("extdata",  "nt_20140320_f17_v01_s.bin", package = "graticule")
 ice <- raster(tfile)
 
 meridians <- seq(-180, 160, by = 20)
