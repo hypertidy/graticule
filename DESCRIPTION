@@ -11,5 +11,5 @@ License: GPL-3
 LazyData: TRUE
 Depends: sp
 Imports: raster
-Suggests: devtools, knitr, oce, rgdal, rworldmap, testthat
+Suggests: devtools, knitr, maptools, oce, rgdal, rworldmap, testthat
 VignetteBuilder: knitr

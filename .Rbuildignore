@@ -3,3 +3,5 @@
 ./*.png
 ./README.Rmd
 .gitignore
+cran-comments.md
+vignettes/*.png
