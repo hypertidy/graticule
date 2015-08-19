@@ -13,3 +13,5 @@ Depends: sp
 Imports: raster
 Suggests: devtools, knitr, maptools, oce, rgdal, rworldmap, testthat
 VignetteBuilder: knitr
+BugReports: https://github.com/mdsumner/graticule/issues
+URL: https://github.com/mdsumner/graticule
