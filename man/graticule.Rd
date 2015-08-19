@@ -39,7 +39,7 @@ The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{ti
 \examples{
 library(rgdal)
 x <- as.matrix(expand.grid(x = seq(100, 240, by = 15), y = seq(-85, -30, by = 15)))
-prj <- "+proj=laea +lon_0=180 +lat_0=-70"
+prj <- "+proj=laea +lon_0=180 +lat_0=-70 +ellps=WGS84"
 px <- project(x, prj)
 g <- graticule(unique(x[,1]), unique(x[,2]))
 pg <- spTransform(g, CRS(prj))
@@ -61,7 +61,7 @@ text(g3labs, lab = parse(text = g3labs$lab))
 ## polygonal graticule on Orthographic projection
 xx <- seq(-90, 90, length = 10) + 147
 yy <- seq(-90, 90, length = 5)
- g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147", tiles = TRUE)
+ g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147 +ellps=WGS84", tiles = TRUE)
  plot(g, col = c("black", "grey"))
  \dontrun{
  library(maptools)
