@@ -8,6 +8,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' library(maptools)
 #' data(wrld_simpl)
 #' library(raster)
@@ -24,6 +25,7 @@
 #' stere <- pathologicule(p, "+proj=stere +lon_0=147 +lat_0=-42")
 #' plot(laea, add = TRUE, col = "dodgerblue")
 #' plot(stere, add = TRUE, col = "firebrick")
+#' }
 #' @importFrom raster projection projection<-
 pathologicule <- function(x, proj) {
   y <- spTransform(x, proj)

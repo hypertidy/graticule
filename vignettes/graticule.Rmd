@@ -213,7 +213,7 @@ It should be said that efforts here should be shared with the sp and rgdal proje
 
 ### Terminology
 
-I tend to use the same terminology as used within [Manifold System](http://www.manifold.net) *because it's so awesome* and that's where I first learnt about most of these concepts. In my experience not many people use the term *graticule* in this way, so take it from the master himself on page 8 (Snyder, 1987): 
+I tend to use the same terminology as used within [Manifold System](http://www.manifold.net/) *because it's so awesome* and that's where I first learnt about most of these concepts. In my experience not many people use the term *graticule* in this way, so take it from the master himself on page 8 (Snyder, 1987): 
 
 > To identify the location of points on the Earth, a graticule or network of longitude
 > and latitude lines has been superimposed on the surface. They are commonly
