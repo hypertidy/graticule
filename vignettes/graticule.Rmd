@@ -204,12 +204,12 @@ mapTissot()
 
 ```
 
-Also see here for another implementation of the Tissot Indicatrix in R by user [whuber on GIS StackExchange](http://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection). 
+Also see here for another implementation of the Tissot Indicatrix in R by user [whuber on GIS StackExchange](http://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection). This is available in the [dev package tissot](https://github.com/mdsumner/tissot). 
 
 
 ## Notes
 
-It should be said that efforts here should be shared with the sp and rgdal projects to improve the functionality for the `llgridlines` and its worker functions `gridlines` and `gridat` in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on dplyr, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in sp, raster, maptools, fields, oce and many others. It is time for a new review, analogous to the effort that built sp in ca. 2002. 
+Efforts could be shared with the sp and rgdal projects to improve the functionality for the `llgridlines` and its worker functions `gridlines` and `gridat` in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on dplyr, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in sp, raster, maptools, fields, oce and many others. It is time for a new review, analogous to the effort that built sp in ca. 2002. 
 
 ### Terminology
 
