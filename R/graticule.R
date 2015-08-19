@@ -54,7 +54,7 @@ lonlatp4 <- function() {
 #' @export
 #'
 #' @examples
-#'
+#'\donttest{\dontrun{
 #' library(rgdal)
 #' x <- as.matrix(expand.grid(x = seq(100, 240, by = 15), y = seq(-85, -30, by = 15)))
 #' prj <- "+proj=laea +lon_0=180 +lat_0=-70 +ellps=WGS84"
@@ -81,12 +81,12 @@ lonlatp4 <- function() {
 #' yy <- seq(-90, 90, length = 5)
 #'  g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147 +ellps=WGS84", tiles = TRUE)
 #'  plot(g, col = c("black", "grey"))
-#'  \dontrun{
+#'
 #'  library(maptools)
 #'  data(wrld_simpl)
 #'  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(projection(g)))
 #'  plot(w, add = TRUE, border = "dodgerblue")
-#'  }
+#'  }}
 #' @importFrom raster isLonLat raster rasterToPolygons extent values<- ncell
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
 graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
