@@ -37,6 +37,7 @@ lines are returned in their original longlat / WGS84.
 The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}.
 }
 \examples{
+\donttest{\dontrun{
 library(rgdal)
 x <- as.matrix(expand.grid(x = seq(100, 240, by = 15), y = seq(-85, -30, by = 15)))
 prj <- "+proj=laea +lon_0=180 +lat_0=-70 +ellps=WGS84"
@@ -63,11 +64,11 @@ xx <- seq(-90, 90, length = 10) + 147
 yy <- seq(-90, 90, length = 5)
  g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147 +ellps=WGS84", tiles = TRUE)
  plot(g, col = c("black", "grey"))
- \dontrun{
+
  library(maptools)
  data(wrld_simpl)
  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(projection(g)))
  plot(w, add = TRUE, border = "dodgerblue")
- }
+ }}
 }
 
