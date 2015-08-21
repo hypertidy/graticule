@@ -10,3 +10,4 @@ test_that("graticule creation is successful", {
 test_that("labels work", {
   expect_that(graticule_labels(seq(100, 240, by = 15), seq(-85, -30, by = 15)), is_a("SpatialPointsDataFrame"))
 })
+
