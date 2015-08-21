@@ -1,3 +1,7 @@
+     VERSION 0.1.1
+
+o specify LCC standard parallels explicitly to avoid problems from some PROJ.4 installations
+
      VERSION 0.1.0
 
 o new function pathologicule to draw the other projection
