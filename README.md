@@ -1,3 +1,6 @@
+[![Travis-CI Build Status](https://travis-ci.org/mdsumner/graticule.svg?branch=master)](https://travis-ci.org/mdsumner/graticule)
+[![](http://www.r-pkg.org/badges/version/graticule)](http://www.r-pkg.org/pkg/graticule)
+[![](http://cranlogs.r-pkg.org/badges/graticule)](http://www.r-pkg.org/pkg/graticule)
 
 graticule
 =========
