@@ -84,7 +84,7 @@ lonlatp4 <- function() {
 #'
 #'  library(maptools)
 #'  data(wrld_simpl)
-#'  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(projection(g)))
+#'  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(proj4string(g)))
 #'  plot(w, add = TRUE, border = "dodgerblue")
 #'  }}
 #' @importFrom raster isLonLat raster rasterToPolygons extent values<- ncell
