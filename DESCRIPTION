@@ -1,17 +1,28 @@
 Package: graticule
 Type: Package
 Title: Meridional and Parallel Lines for Maps
-Version: 0.1.1
+Version: 0.1.3.9001
 Authors@R: person("Michael D.","Sumner", role = c("aut", "cre"), email =
     "mdsumner@gmail.com")
-Description: Create graticule lines and labels for maps. Control the creation of
-  lines by setting their placement (at particular meridians and parallels) and extent
-  (along parallels and meridians). Labels are created independently of lines.
+Description: Create graticule lines and labels for maps. Control the creation
+    of lines by setting their placement (at particular meridians and parallels)
+    and extent (along parallels and meridians). Labels are created independently of
+    lines.
 License: GPL-3
 LazyData: TRUE
-Depends: sp
-Imports: raster
-Suggests: devtools, knitr, maptools, oce, rgdal, rworldmap, testthat
+Depends:
+    sp
+Imports:
+    raster
+Suggests:
+    devtools,
+    knitr,
+    maptools,
+    oce,
+    rgdal,
+    rworldmap,
+    testthat
 VignetteBuilder: knitr
 BugReports: https://github.com/mdsumner/graticule/issues
 URL: https://github.com/mdsumner/graticule
+RoxygenNote: 5.0.1

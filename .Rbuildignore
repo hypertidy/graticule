@@ -5,3 +5,4 @@
 .gitignore
 cran-comments.md
 vignettes/*.png
+^\.travis\.yml$
