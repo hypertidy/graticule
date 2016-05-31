@@ -2,7 +2,10 @@
 title: "Graticules for R"
 author: "Michael Sumner"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    fig_width: 7
+    fig_height: 7
 vignette: >
   %\VignetteIndexEntry{Graticule}
   %\VignetteEngine{knitr::rmarkdown}
@@ -107,19 +110,18 @@ Continuing from the sea ice example, build the graticule grid as actual polygons
 polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = projection(ice), tiles = TRUE)
 centroids <- project(coordinates(polargrid), projection(ice), inv = TRUE)
 labs <- graticule_labels(meridians, parallels,  proj = projection(ice))
-labs <- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))
-labs <- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix
+#labs <- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))
+#labs <- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix
 cols <- sample(colors(), nrow(polargrid))
 op <- par(mar = rep(0, 4))
 plot(polargrid, col  = cols, bg = "black")
-text(labs[labs$islon, ], lab = parse(text = labs$lab[labs$islon]), col = "black",  cex = .55, pos = 3)
-text(labs[!labs$islon, ], lab = parse(text = labs$lab[!labs$islon]), col = "black", cex = .55, pos = 1)
+text(labs[labs$islon, ], lab = parse(text = labs$lab[labs$islon]), col = "white",  cex = 0.9, pos = 3)
 par(op)
 
 ```
 ## Comparison to tools in sp and rgdal
 
-The rgdal function `llgridlines()` will draw a graticule on a map but has a few limitations. 
+The rgdal function `llgridlines()` will draw a graticule on a map but had a few limitations prior to May 2016 (some of this story is now out of date and has been improved).  
 
 * no control over the exact meridian and parallel lines to draw
 * the extent of lines is not independent of their perpendicular counterparts
@@ -182,11 +184,13 @@ Here is our map of Victoria.
 ```{r,message=FALSE}
 library(oce)
 ## we need to hop the crevasse into another world
-pp <- coordinates(as(as(map, "SpatialLines"), "SpatialPoints"))
-mapPlot(pp[,1], pp[,2], projection = projection(pmap), longitudelim = xl, latitudelim = yl, type = "n", grid = FALSE)
+
+pp <- raster::geom(map, sepNA = TRUE)
+mapPlot(pp[,"x"], pp[,"y"], projection = projection(pmap), longitudelim = xl, latitudelim = yl, type = "p", grid = FALSE)
 mapGrid(longitude = lons, latitude = lats)
 ## and to prove that all is well in the world
-plot(pmap, add = TRUE)
+plot(pmap, add = TRUE, col = "grey")
+mapGrid(longitude = lons, latitude = lats)
 
 ```
 
