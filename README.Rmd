@@ -1,6 +1,21 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/mdsumner/graticule.svg?branch=master)](https://travis-ci.org/mdsumner/graticule) [![](http://www.r-pkg.org/badges/version/graticule)](http://www.r-pkg.org/pkg/graticule) [![](http://cranlogs.r-pkg.org/badges/graticule)](http://www.r-pkg.org/pkg/graticule)
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+
+[![Travis-CI Build Status](https://travis-ci.org/mdsumner/graticule.svg?branch=master)](https://travis-ci.org/mdsumner/graticule)
+[![](http://www.r-pkg.org/badges/version/graticule)](http://www.r-pkg.org/pkg/graticule)
+[![](http://cranlogs.r-pkg.org/badges/graticule)](http://www.r-pkg.org/pkg/graticule)
 
 graticule
 =========
@@ -12,18 +27,17 @@ Installation
 
 Insall the latest released version from CRAN with
 
-``` r
+```{r,eval=FALSE}
 install.packages("graticule")
 ``
 
 The development version of the graticule package is on GitHub, and can be installed like this:
-```
 
-``` r
+```{r,eval=FALSE}
 devtools::install_github("mdsumner/graticule")
 ```
 
 Known issues
 ------------
 
--   There's work needed for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines
+* There's work needed for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines

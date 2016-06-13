@@ -6,3 +6,5 @@
 cran-comments.md
 vignettes/*.png
 ^\.travis\.yml$
+^README\.Rmd$
+^README-.*\.png$

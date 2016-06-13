@@ -4,8 +4,8 @@ author: "Michael Sumner"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
-    fig_width: 7
-    fig_height: 7
+    fig_width: 9
+    fig_height: 9
 vignette: >
   %\VignetteIndexEntry{Graticule}
   %\VignetteEngine{knitr::rmarkdown}
