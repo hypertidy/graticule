@@ -13,6 +13,7 @@ importFrom(raster,raster)
 importFrom(raster,rasterToPolygons)
 importFrom(raster,xmax)
 importFrom(raster,xmin)
+
 importFrom(raster,ymax)
 importFrom(raster,ymin)
 importFrom(sp,"coordinates<-")
