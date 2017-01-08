@@ -88,7 +88,7 @@ lonlatp4 <- function() {
 #'  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(proj4string(g)))
 #'  plot(w, add = TRUE, border = "dodgerblue")
 #'  }}
-#' @importFrom raster isLonLat raster rasterToPolygons extent values<- ncell res
+#' @importFrom raster isLonLat raster extent values<- ncell res
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
 graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
   oepr <- Sys.getenv("OGR_ENABLE_PARTIAL_REPROJECTION")

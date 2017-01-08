@@ -14,10 +14,9 @@ Insall the latest released version from CRAN with
 
 ``` r
 install.packages("graticule")
-``
+```
 
 The development version of the graticule package is on GitHub, and can be installed like this:
-```
 
 ``` r
 devtools::install_github("mdsumner/graticule")
@@ -26,4 +25,7 @@ devtools::install_github("mdsumner/graticule")
 Known issues
 ------------
 
+There will be some ongoing disruption while transitioning to the `sf` package, please feel free to share your experiences and report problems at <https://github.com/mdsumner/graticule/issues>
+
+-   general problems with segmentation, this is not done smartly yet
 -   There's work needed for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines

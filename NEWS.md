@@ -10,6 +10,8 @@ and the building will be a bit faster.
 * tile creation now performed with quadmesh, which is significantly faster and allows
 generation of much larger numbers of tiles
 
+* graticule no longer shares the extra dependency from raster on rgeos, rasterToPolygons is no longer used
+
 * Added supporting information to the package. 
 
 
