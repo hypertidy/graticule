@@ -19,7 +19,7 @@ compiler:
 after_success:
   - Rscript -e 'covr::codecov()'
 
-  install:
+install:
   - ./pkg-build.sh install_deps
 
 script:
