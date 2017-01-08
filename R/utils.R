@@ -33,3 +33,5 @@ qm_rasterToPolygons <- function(x, all_layers = TRUE) {
 qm_rasterToPolygons_sp <- function(x) {
   as(qm_rasterToPolygons(x), "Spatial")
 }
+
+

@@ -10,3 +10,4 @@ vignettes/*.png
 ^README-.*\.png$
 docs/*
 revdep/*
+^data-raw$

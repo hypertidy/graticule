@@ -1,0 +1,54 @@
+---
+title: "Many projections"
+author: "Michael Sumner"
+date: "08/01/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Graticules are a pain
+
+```{r}
+parse_proj <- function(x, lab = "proj") {
+  l <- strsplit(as.character(x), "\\+")
+  p <- gsub(sprintf("%s=", lab), "", unlist(lapply(l, function(a) grep(sprintf("^%s", lab), a, value = TRUE))))
+  p
+}
+e <- rgdal::make_EPSG()
+allfamily <- parse_proj(e$prj4)
+ufamily_proj <- as.character(e$prj4)[unlist(lapply(split(seq_along(allfamily), allfamily), function(x) sample(x, min(c(30, length(x))))))]
+
+ufamily_proj <- na.omit(ufamily_proj)
+```
+
+Map points. 
+
+```{r}
+library(maptools)
+data(wrld_simpl)
+library(spbabel)
+library(dplyr)
+pts <- sptable(wrld_simpl) %>% select(x_, y_)
+library(rgdal)
+library(spex)
+
+mpts <- as.matrix(pts)[sample(nrow(pts), 2000), ]
+for (i in seq_along(ufamily_proj)) {
+  print(i)
+  iproj <- ufamily_proj[i]
+  apts <- rgdal::project(mpts, iproj)
+  apts <- apts[(is.finite(apts[, 1]) | is.finite(apts[, 2])), ]
+if (nrow(apts) > 2L) {
+  ## see rbgm for nicer plotting here
+  plot(apts, pch = 19, cex = 0.3, main = iproj, cex.main = 0.75, asp = 1)
+  print(CRS(iproj))
+  plot(graticule:::auto_graticule(SpatialPoints(apts, proj4string = CRS(iproj))), add = TRUE)
+} else {
+  print("no can do")
+  print(iproj)
+}
+}
+```
