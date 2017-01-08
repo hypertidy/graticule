@@ -34,7 +34,8 @@ with \code{xlim} (extent of parallel line in longitude) and \code{ylim} (extent 
 Provide a valid PROJ.4 string to return the graticule lines in this projection. If this is not specified the graticule
 lines are returned in their original longlat / WGS84.
 
-The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}.
+The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}. Tiles
+are hardcoded to have 60 vertices per edge.
 }
 \examples{
 \donttest{\dontrun{

@@ -1,7 +1,7 @@
 Package: graticule
 Type: Package
 Title: Meridional and Parallel Lines for Maps
-Version: 0.1.3.9001
+Version: 0.1.5
 Authors@R: person("Michael D.","Sumner", role = c("aut", "cre"), email =
     "mdsumner@gmail.com")
 Description: Create graticule lines and labels for maps. Control the creation
@@ -13,7 +13,10 @@ LazyData: TRUE
 Depends:
     sp
 Imports:
-    raster
+    methods, 
+    quadmesh, 
+    raster, 
+    sf
 Suggests:
     devtools,
     knitr,
@@ -21,6 +24,7 @@ Suggests:
     oce,
     rgdal,
     rworldmap,
+    spex,
     testthat
 VignetteBuilder: knitr
 BugReports: https://github.com/mdsumner/graticule/issues
