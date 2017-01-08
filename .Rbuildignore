@@ -8,3 +8,5 @@ vignettes/*.png
 ^\.travis\.yml$
 ^README\.Rmd$
 ^README-.*\.png$
+docs/*
+revdep/*
