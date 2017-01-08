@@ -1,6 +1,6 @@
 ---
 title: "Graticules for R"
-author: "Michael Sumner"
+author: "Michael D. Sumner"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -31,6 +31,12 @@ knitr::opts_chunk$set(
 Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the tools to 
 create and draw these lines by explicit specification by the user. This provides a good compromise between high-level automation and the flexibility to drive the low level details as needed, using base graphics in R. 
 
+
+Please note that this is an evolving topic, across a number of packages in R. There's no
+ongoing integration of how best to do this, and some of the commentary in this vignette
+will be out of date quickly as individual packages do updates. I've recorded the exact versions used for this document at the end. 
+
+This is an area that needs much more discussion and outlining of needs and experiences. 
 
 
 # Examples
@@ -133,7 +139,9 @@ Above we defined longitude and latitude ranges for an area of interest in Austra
 
 ```{r}
 plot(pmap)
+op <- par(xpd = NA)
 llgridlines(pmap)
+par(op)
 ```
 
 We cannot easily modify the lines to be only in our local area, since `llgridlines` overrides our inputs with the bounding box of the overall object. 
@@ -174,6 +182,62 @@ plot(ice, axes = FALSE)
 llgridlines(as(ice, "SpatialPoints"), easts = c(-180, -120, -60, 0, 60, 120), norths = c(-80, -70, -60, -50), ndiscr = 50)
 ```
 
+## Comparison with sf
+
+(This is pretty good, needs more exploration.)
+
+```{r}
+library(sf)
+sf_map <- st_as_sf(pmap)
+g <- st_graticule(sf_map)
+plot(st_geometry(sf_map))
+op <- par(xpd = NA)
+plot(st_geometry(g), add = TRUE)
+invisible(lapply(seq_len(nrow(g)), function(i) {
+if (g$type[i] == "N" && g$x_start[i] - min(g$x_start) < 1000)
+	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_start[i], pos = 2, cex = .7)
+if (g$type[i] == "E" && g$y_start[i] - min(g$y_start) < 1000)
+	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_start[i] - 90, pos = 1, cex = .7)
+if (g$type[i] == "N" && g$x_end[i] - max(g$x_end) > -1000)
+	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_end[i], pos = 4, cex = .7)
+if (g$type[i] == "E" && g$y_end[i] - max(g$y_end) > -1000)
+	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_end[i] - 90, pos = 3, cex = .7)
+}))
+
+par(op)
+```
+
+```{r}
+
+library(spex)
+pex <- spex(ice)
+plot(ice, axes = FALSE)
+g <- st_graticule(st_as_sf(pex))
+plot(st_geometry(g), add = TRUE) 
+op <- par(xpd = NA)
+invisible(lapply(seq_len(nrow(g)), function(i) {
+if (g$type[i] == "N" && g$x_start[i] - min(g$x_start) < 1000)
+	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_start[i], pos = 2, cex = .7)
+if (g$type[i] == "E" && g$y_start[i] - min(g$y_start) < 1000)
+	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_start[i] - 90, pos = 1, cex = .7)
+if (g$type[i] == "N" && g$x_end[i] - max(g$x_end) > -1000)
+	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_end[i], pos = 4, cex = .7)
+if (g$type[i] == "E" && g$y_end[i] - max(g$y_end) > -1000)
+	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
+		srt = g$angle_end[i] - 90, pos = 3, cex = .7)
+}))
+par(op)
+```
+## Comparison with the graticule in ggplot2
+
+TBD
 
 ## Comparison to **mapGrid** in oce
 
