@@ -1,5 +1,7 @@
 # graticule 0.1.5
 
+* added proj_family data set
+
 * added a message about a future migration to sf (simple features) return values, this version starts using sf internally, but still returns Spatial classes
 
 * line and tile collection and projection transformation is now done using sf, 

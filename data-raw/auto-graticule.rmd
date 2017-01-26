@@ -19,7 +19,7 @@ parse_proj <- function(x, lab = "proj") {
 }
 e <- rgdal::make_EPSG()
 allfamily <- parse_proj(e$prj4)
-ufamily_proj <- as.character(e$prj4)[unlist(lapply(split(seq_along(allfamily), allfamily), function(x) sample(x, min(c(30, length(x))))))]
+ufamily_proj <- as.character(e$prj4)[unlist(lapply(split(seq_along(allfamily), allfamily), function(x) sample(x, min(c(5, length(x))))))]
 
 ufamily_proj <- na.omit(ufamily_proj)
 ```

@@ -4,11 +4,17 @@ grain <- function(x, n = 300) {
   diff(maxrange)/n
 }
 
+#' @importFrom sp coordinates
+#' @importFrom raster projection raster setValues rasterToContour
+#' @importFrom methods as
+#' @importFrom rgdal project
+#' @importFrom sf st_as_sf
 auto_graticule <- function(x, nlevels = 15L, nlevels_lon = nlevels, nlevels_lat = nlevels) {
-  if (!inherits(x, "Spatial")) x<- as(x, "Spatial")
+  ## what was this for? we need a spex(anything)
+  #if (!inherits(x, "Spatial")) x <- as(x, "Spatial")
   proj <- raster::projection(x)
   r <- raster::raster(spex::spex(x), res = grain(x))
-  cds <- rgdal::project(coordinates(r), proj, inv = TRUE)
+  cds <- rgdal::project(sp::coordinates(r), proj, inv = TRUE)
   lon <- raster::setValues(r, cds[, 1L])
   lat <- raster::setValues(r, cds[, 2L])
   as(rbind(sf::st_as_sf(raster::rasterToContour(lon, nlevels = nlevels_lon)),
