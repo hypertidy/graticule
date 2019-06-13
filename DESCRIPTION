@@ -1,7 +1,7 @@
 Package: graticule
 Type: Package
 Title: Meridional and Parallel Lines for Maps
-Version: 0.1.5
+Version: 0.1.5.9001
 Authors@R: person("Michael D.","Sumner", role = c("aut", "cre"), email =
     "mdsumner@gmail.com")
 Description: Create graticule lines and labels for maps. Control the creation
@@ -25,8 +25,9 @@ Suggests:
     rgdal,
     rworldmap,
     spex,
-    testthat
+    testthat,
+    rmarkdown
 VignetteBuilder: knitr
 BugReports: https://github.com/mdsumner/graticule/issues
 URL: https://github.com/mdsumner/graticule
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

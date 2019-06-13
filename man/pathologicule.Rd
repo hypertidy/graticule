@@ -38,4 +38,3 @@ plot(laea, add = TRUE, col = "dodgerblue")
 plot(stere, add = TRUE, col = "firebrick")
 }
 }
-

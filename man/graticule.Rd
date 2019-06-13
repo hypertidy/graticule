@@ -4,6 +4,7 @@
 \name{graticule}
 \alias{graticule}
 \alias{graticule-package}
+\alias{graticule}
 \title{graticule: graticule lines for maps}
 \usage{
 graticule(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE)
@@ -72,4 +73,3 @@ yy <- seq(-90, 90, length = 5)
  plot(w, add = TRUE, border = "dodgerblue")
  }}
 }
-

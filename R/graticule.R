@@ -5,8 +5,19 @@
 NULL
 limfun <- function(x, lim, nd = 60, meridian = TRUE) {
   ind <- 1:2
+
   if (!meridian) ind <- 2:1
   cbind(x = x, y = seq(lim[1], lim[2], length = nd))[, ind]
+}
+
+step_fun <- function(x, steps, nd = 60, meridian = TRUE) {
+  ind <- 1:2
+
+  if (!meridian) ind <- 2:1
+  op <- options(warn = -1)
+  on.exit(options(op))
+  step_seg <- as.data.frame(head(matrix(steps, nrow = length(steps)+1, ncol = 2), -2))
+  lapply(split(step_seg, 1:nrow(step_seg)), function(a) cbind(x = x, y = seq(unlist(a)[1], unlist(a)[2], length = nd))[, ind])
 }
 
 buildlines <- function(x) {
@@ -134,8 +145,12 @@ if (tiles) {
 }
   if (missing(xlim)) xlim <- range(lons)
   if (missing(ylim)) ylim <- range(lats)
-  xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE)
-  yline <- lapply(lats, limfun, lim = xlim, meridian = FALSE)
+  #xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE)
+  #yline <- lapply(lats, limfun, lim = xlim, meridian = FALSE)
+ #Q browser()
+  xline <- step_fun(lons, lats, nd = nverts, meridian = TRUE)
+  yline <- step_fun(lats, lons, nd = nverts,  meridian = FALSE)
+
   xs <- buildlines(xline)
   ys <- buildlines(yline)
   ys$id <- ys$id + max(xs$id)
@@ -151,11 +166,11 @@ if (tiles) {
   #                      data.frame(ID = as.character(seq_along(l))))
   for (i in seq_along(d0)) ll[[i]] <- sf::st_linestring(as.matrix(d0[[i]][, c("x", "y")]))
   l <- data.frame(ID = as.character(seq_along(ll)), stringsAsFactors = TRUE) ## ewk
-  l[["geometry"]] <-sf::st_sfc(ll, crs = lonlatp4())
-  l <-sf::st_as_sf(l)
+  l[["geometry"]] <- sf::st_sfc(ll, crs = lonlatp4())
+  l <- sf::st_as_sf(l)
   if (trans) l <- sf::st_transform(l, proj)
   l <- as(l, "Spatial")
-  message(sprintf("returning a %s but a future release will be sf", class(l)))
+#  message(sprintf("returning a %s but a future release will be sf", class(l)))
   l
 }
 

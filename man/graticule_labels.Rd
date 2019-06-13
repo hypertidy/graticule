@@ -33,4 +33,3 @@ op <- par(xpd = NA)
 text(labs, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2)
 par(op)
 }
-
