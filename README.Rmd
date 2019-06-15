@@ -44,3 +44,10 @@ Please feel free to share your experiences and report problems at https://github
 
 * general problems with segmentation, this is not done smartly yet
 * There's work needed for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines
+
+
+---
+
+ Please note that the 'graticule' project is released with a
+  [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
+  By contributing to this project, you agree to abide by its terms.

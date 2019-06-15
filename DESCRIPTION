@@ -17,7 +17,8 @@ Imports:
     quadmesh,
     raster,
     utils,
-    geosphere
+    geosphere,
+    stats
 Suggests:
     devtools,
     knitr,

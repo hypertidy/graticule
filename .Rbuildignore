@@ -10,3 +10,4 @@ vignettes/*.png
 ^README-.*\.png$
 docs/*
 revdep/*
+^CODE_OF_CONDUCT\.md$

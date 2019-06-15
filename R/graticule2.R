@@ -12,6 +12,8 @@
 #'  parallels <- c(-80, -73.77, -68, -55, -45)
 #'  polargrid <- graticule_tiles(lons = c(meridians, 180),
 #'  lats = parallels,  proj = prj)
+#'  @importFrom stats approx
+#'  @importFrom utils head
 graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, by = 12),
                             nverts = 24, proj = NULL,
                             margin = FALSE) {
@@ -58,7 +60,7 @@ ll_extent <- function(lonrange, latrange, nverts = 24, mindist = 1e5) {
                     dst <- geosphere::distRhumb(xy[1, ], xy[2, ])
                     nn <- if (is.null(mindist)) nverts else round(dst/mindist)
                     nn <- max(c(nn, 3))  ## there's got to be a limit
-                    cbind(approx(xy[,1], n = nn)$y, approx(xy[,2], n = nn)$y)
+                    cbind(stats::approx(xy[,1], n = nn)$y, approx(xy[,2], n = nn)$y)
                   })
   do.call(rbind, lapply(l, head, -1))
 }
