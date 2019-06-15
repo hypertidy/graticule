@@ -24,8 +24,8 @@ graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, 
     cells <-
       c(raster::cellFromRow(grid, 1),             ## top margin
         raster::cellFromCol(grid, ncol(grid))[-c(1,nrow(grid))],      ## right margin
-        head(rev(raster::cellFromRow(grid, nrow(grid))), -1), ## bottom margin
-        head(rev(raster::cellFromCol(grid, 1)), -1))          ## left margin
+        utils::head(rev(raster::cellFromRow(grid, nrow(grid))), -1), ## bottom margin
+        utils::head(rev(raster::cellFromCol(grid, 1)), -1))          ## left margin
   } else {
     cells <- seq_len(raster::ncell(grid))
   }
@@ -52,8 +52,8 @@ ll_extent <- function(lonrange, latrange, nverts = 24, mindist = 1e5) {
                    latrange)[c(1, 2, 2, 2, 2, 1, 1, 1,
                                3, 3, 3, 4, 4, 4, 4, 3)],
                  ncol = 2)
-  l <- purrr::map(seq(1, nrow(dat2), by = 2),
-                  ~{
+  l <- lapply(seq(1, nrow(dat2), by = 2),
+                function(.x) {
                     xy <- dat2[c(.x, .x + 1), ]
                     dst <- geosphere::distRhumb(xy[1, ], xy[2, ])
                     nn <- if (is.null(mindist)) nverts else round(dst/mindist)

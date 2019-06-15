@@ -16,7 +16,7 @@ step_fun <- function(x, steps, nd = 60, meridian = TRUE) {
   if (!meridian) ind <- 2:1
   op <- options(warn = -1)
   on.exit(options(op))
-  step_seg <- as.data.frame(head(matrix(steps, nrow = length(steps)+1, ncol = 2), -2))
+  step_seg <- as.data.frame(utils::head(matrix(steps, nrow = length(steps)+1, ncol = 2), -2))
   lapply(split(step_seg, 1:nrow(step_seg)), function(a) cbind(x = x, y = seq(unlist(a)[1], unlist(a)[2], length = nd))[, ind])
 }
 

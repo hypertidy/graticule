@@ -13,9 +13,11 @@ LazyData: TRUE
 Depends:
     sp
 Imports:
-    methods, 
-    quadmesh, 
-    raster
+    methods,
+    quadmesh,
+    raster,
+    utils,
+    geosphere
 Suggests:
     devtools,
     knitr,
@@ -23,6 +25,7 @@ Suggests:
     oce,
     rgdal,
     rworldmap,
+    sf,
     spex,
     testthat,
     rmarkdown
