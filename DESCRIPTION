@@ -15,8 +15,7 @@ Depends:
 Imports:
     methods, 
     quadmesh, 
-    raster, 
-    sf
+    raster
 Suggests:
     devtools,
     knitr,
@@ -30,4 +29,4 @@ Suggests:
 VignetteBuilder: knitr
 BugReports: https://github.com/mdsumner/graticule/issues
 URL: https://github.com/mdsumner/graticule
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

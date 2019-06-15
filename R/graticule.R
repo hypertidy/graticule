@@ -118,60 +118,30 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = 
       lats <- seq(-90, 90, by = 10)
   }
 if (tiles) {
-  ## build a raster and return the polygons
-  rr <- raster::raster(extent(range(lons), range(lats)), nrows = length(lats)-1, ncols = length(lons)-1, crs = lonlatp4())
-  values(rr) <- seq(ncell(rr))
-  ## we need to not use raster for this
-  ##nodes <- c(4, 8, 16)[pmax(1, findInterval(nverts, c(2, 3, 5)))]
-##  rbenchmark::benchmark(g <- graticule(tiles = TRUE))
-##  test replications elapsed relative user.self sys.self user.child sys.child
-##  1 g <- graticule(tiles = TRUE)          100    7.24        1      7.24        0         NA        NA
-  #pp <- raster::rasterToPolygons(rr, dissolve = TRUE, n = nodes)
-  ##rbenchmark::benchmark(g <- graticule(tiles = TRUE))
-  ##test replications elapsed relative user.self sys.self user.child sys.child
-  ##1 g <- graticule(tiles = TRUE)          100    2.82        1      2.83        0         NA        NA
-  pp <- qm_rasterToPolygons(rr)
-
-  ## hard code to 15 points per pixel edge (for now)
-  ppg <- sf::st_segmentize(pp, dfMaxLength = min(raster::res(rr))/60L, warn = FALSE)
-  ## grr segmentize returns on the geometry ...
-  pp[["geometry"]] <- sf::st_geometry(ppg)
-  pp <- sf::st_as_sf(pp)
-  ##if (trans) pp <- sp::spTransform(pp, sp::CRS(proj))
-  if (trans) pp <- sf::st_transform(pp, proj)
-  pp <- as(pp, "Spatial")
-  message(sprintf("returning a %s but a future release with be sf", class(pp)))
+  pp <- graticule_tiles(lons, lats, proj = proj)
   return(pp)
 }
   if (missing(xlim)) xlim <- range(lons)
   if (missing(ylim)) ylim <- range(lats)
-  #xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE)
-  #yline <- lapply(lats, limfun, lim = xlim, meridian = FALSE)
- #Q browser()
-  xline <- step_fun(lons, lats, nd = nverts, meridian = TRUE)
-  yline <- step_fun(lats, lons, nd = nverts,  meridian = FALSE)
-
+  xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE)
+  yline <- lapply(lats, limfun, lim = xlim, meridian = FALSE)
   xs <- buildlines(xline)
   ys <- buildlines(yline)
   ys$id <- ys$id + max(xs$id)
   xs$type <- "meridian"
   ys$type <- "parallel"
   d <- rbind(xs, ys)
-#  coordinates(d) <- ~x+y
- # proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+  #  coordinates(d) <- ~x+y
+  # proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
   d0 <- split(d, d$id)
-  ll <- vector("list", length(d0))
-  #for (i in seq_along(d0)) l[[i]] <- sp::Lines(list(sp::Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
-  #l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(lonlatp4())),
-  #                      data.frame(ID = as.character(seq_along(l))))
-  for (i in seq_along(d0)) ll[[i]] <- sf::st_linestring(as.matrix(d0[[i]][, c("x", "y")]))
-  l <- data.frame(ID = as.character(seq_along(ll)), stringsAsFactors = TRUE) ## ewk
-  l[["geometry"]] <- sf::st_sfc(ll, crs = lonlatp4())
-  l <- sf::st_as_sf(l)
-  if (trans) l <- sf::st_transform(l, proj)
-  l <- as(l, "Spatial")
-#  message(sprintf("returning a %s but a future release will be sf", class(l)))
+  l <- vector("list", length(d0))
+  for (i in seq_along(d0)) l[[i]] <- sp::Lines(list(sp::Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
+  l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(lonlatp4())),
+                                 data.frame(ID = as.character(seq_along(l))))
+  if (trans) l <- sp::spTransform(l, sp::CRS(proj))
   l
+  #d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
+
 }
 
 #' Create graticule labels.

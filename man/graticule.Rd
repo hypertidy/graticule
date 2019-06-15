@@ -4,10 +4,10 @@
 \name{graticule}
 \alias{graticule}
 \alias{graticule-package}
-\alias{graticule}
 \title{graticule: graticule lines for maps}
 \usage{
-graticule(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE)
+graticule(lons, lats, nverts = 60, xlim, ylim, proj = NULL,
+  tiles = FALSE)
 }
 \arguments{
 \item{lons}{longitudes for meridional lines}
@@ -25,8 +25,6 @@ graticule(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE)
 \item{tiles}{if \code{TRUE} return polygons as output}
 }
 \description{
-graticule: graticule lines for maps
-
 Specify the creation of lines along meridians by specifying their placement
 at particular \code{lons} (longitudes) and \code{lats} (latitudes) and their extents
 with \code{xlim} (extent of parallel line in longitude) and \code{ylim} (extent of meridional line in latitude).
