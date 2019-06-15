@@ -12,6 +12,8 @@
 #'  parallels <- c(-80, -73.77, -68, -55, -45)
 #'  polargrid <- graticule_tiles(lons = c(meridians, 180),
 #'  lats = parallels,  proj = prj)
+NULL
+
 #'  @importFrom stats approx
 #'  @importFrom utils head
 graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, by = 12),
