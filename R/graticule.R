@@ -102,9 +102,6 @@ lonlatp4 <- function() {
 #' @importFrom raster isLonLat raster extent values<- ncell res
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
 graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
-  oepr <- Sys.getenv("OGR_ENABLE_PARTIAL_REPROJECTION")
-  Sys.setenv(OGR_ENABLE_PARTIAL_REPROJECTION = "TRUE")
-  on.exit(Sys.setenv(OGR_ENABLE_PARTIAL_REPROJECTION = oepr), add = TRUE)
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
@@ -193,7 +190,6 @@ graticule_labels <- function(lons, lats, xline, yline, proj = NULL) {
   if (trans) {
     l <- sp::spTransform(l, CRS(proj))
   }
-  message(sprintf("returning a %s but a future release will be sf", class(l)))
 
   l
 }

@@ -1,11 +1,5 @@
-# graticule 0.1.5
+# graticule 0.1.5.9002
 
-* added a message about a future migration to sf (simple features) return values, this version starts using sf internally, but still returns Spatial classes
-
-* line and tile collection and projection transformation is now done using sf, 
-with the OGR_ENABLE_PARTIAL_REPROJECTION environment variable set to TRUE. This 
-means a much wider variety of regions and projections can be successfully generated, 
-and the building will be a bit faster. 
 
 * tile creation now performed with quadmesh, which is significantly faster and allows
 generation of much larger numbers of tiles
