@@ -14,8 +14,11 @@
 #'  lats = parallels,  proj = prj)
 NULL
 
-#'  @importFrom stats approx
-#'  @importFrom utils head
+#' Graticule tiles
+#' @noRd
+#'
+#' @importFrom stats approx
+#' @importFrom utils head
 graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, by = 12),
                             nverts = 24, proj = NULL,
                             margin = FALSE) {
