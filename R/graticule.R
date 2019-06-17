@@ -3,11 +3,19 @@
 #' @docType package
 #' @name graticule
 NULL
-limfun <- function(x, lim, nd = 60, meridian = TRUE) {
-  ind <- 1:2
+limfun <- function(x, lim, meridian = TRUE) {
 
-  if (!meridian) ind <- 2:1
-  cbind(x = x, y = seq(lim[1], lim[2], length = nd))[, ind]
+  mindist <- getOption("graticule.mindist")
+  if (is.na(mindist) || is.null(mindist) || !is.numeric(mindist)) {
+    mindist <- 5e4
+    warning(sprintf("option('graticule.mindist') is malformed, using %fm", mindist))
+  }
+ if (!meridian) {
+    out <- ll_extent(lim, c(x, x), mindist = mindist)
+  } else {
+    out <- ll_extent(c(x, x), lim, mindist = mindist)
+  }
+  out
 }
 
 step_fun <- function(x, steps, nd = 60, meridian = TRUE) {
@@ -53,9 +61,9 @@ lonlatp4 <- function() {
 #'
 #' Provide a valid PROJ.4 string to return the graticule lines in this projection. If this is not specified the graticule
 #' lines are returned in their original longlat / WGS84.
-#'
-#' The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}. Tiles
-#' are hardcoded to have 60 vertices per edge.
+#' All segments are discretized as _rhumb_lines_ at `getOption("graticule.mindist")` metres, which
+#' defaults to `5e4`.
+#' The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}.
 #' @param lons longitudes for meridional lines
 #' @param lats latitudes for parallel lines
 #' @param nverts number of discrete vertices for each segment
@@ -105,6 +113,15 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = 
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
+  if (tiles) {
+    if (!missing(xlim)) {
+      warning("xlim is ignored if 'tiles = TRUE'")
+    }
+    if (!missing(ylim)) {
+      warning("ylim is ignored if 'tiles = TRUE'")
+    }
+
+  }
   if (!raster::isLonLat(proj)) trans <- TRUE
   if (missing(lons)) {
     #usr <- par("usr")

@@ -1,8 +1,7 @@
-# graticule 0.1.5.9002
+# graticule 0.1.5.9003
 
-
-* tile creation now performed with quadmesh, which is significantly faster and allows
-generation of much larger numbers of tiles
+* Tile and line graticules are now created by the same process, which discretizes
+to a default value of 5e4m (50km). This is settable with `options(graticule.mindist = )`. 
 
 * graticule no longer shares the extra dependency from raster on rgeos, rasterToPolygons is no longer used
 
