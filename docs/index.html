@@ -78,22 +78,39 @@
     
     
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <div id="graticule" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#graticule" class="anchor"></a>graticule</h1></div>
+<!-- badges: start -->
+
 <p>Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the tools to create and draw these lines by explicit specification by the user. This provides a good compromise between high-level automation and the flexibility to drive the low level details as needed, using base graphics in R.</p>
-</div>
-<div id="installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h1>
-<p>Insall the latest released version from CRAN with</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"graticule"</span>)</a></code></pre></div>
-<p>The development version of the graticule package is on GitHub, and can be installed like this:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"mdsumner/graticule"</span>)</a></code></pre></div>
-<div id="known-issues" class="section level2">
+<div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#known-issues" class="anchor"></a>Known issues</h2>
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install the released version of graticule from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"graticule"</span>)</a></code></pre></div>
+<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"mdsumner/graticule"</span>)</a></code></pre></div>
+</div>
+<div id="example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h2>
+<p>This is a basic example which shows how to create a graticule at specific longitude and latitude spacings and in a given projection.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(graticule)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; Loading required package: sp</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">grat &lt;-<span class="st"> </span><span class="kw"><a href="reference/graticule.html">graticule</a></span>(<span class="dt">lons =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">100</span>, <span class="dv">220</span>, <span class="dt">by =</span> <span class="dv">15</span>), <span class="dt">lats =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">60</span>, <span class="dv">-10</span>, <span class="dt">by =</span> <span class="dv">5</span>), <span class="dt">proj =</span> <span class="st">"+proj=laea +lon_0=140 +lat_0=-90 +datum=WGS84"</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(grat)</a></code></pre></div>
+<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<p>There is an automatic segmentation that is done at equal distances along these <a href="https://en.wikipedia.org/wiki/Rhumb_line">rhumb lines</a>. This is not an <em><a href="https://bost.ocks.org/mike/example/">ideal spacing</a></em> but is an improvement on the common alternatives, and is easier to work with when you need fine control.</p>
+<p>If your projection is not wildly warped in most areas then the default rhumb line segmentation is the best first step.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">as</span>(grat, <span class="st">"SpatialPoints"</span>))</a></code></pre></div>
+<p><img src="reference/figures/README-rhumb-points-1.png" width="100%"></p>
+<p>This also allows the common case of creating a sensible single polygon <em>wedge</em>, i.e.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">wedge &lt;-<span class="st"> </span><span class="kw"><a href="reference/graticule.html">graticule</a></span>(<span class="dt">lons =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">40</span>, <span class="dv">40</span>), <span class="dt">lats =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">60</span>, <span class="dv">-40</span>), <span class="dt">proj =</span> <span class="st">"+proj=laea +lat_0=-50 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(wedge)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/points">points</a></span>(<span class="kw">as</span>(wedge, <span class="st">"SpatialPoints"</span>))</a></code></pre></div>
+<p><img src="reference/figures/README-wedge-1.png" width="100%"> ## Known Issues</p>
 <p>Please feel free to share your experiences and report problems at <a href="https://github.com/mdsumner/graticule/issues" class="uri">https://github.com/mdsumner/graticule/issues</a></p>
 <ul>
 <li>general problems with segmentation, this is not done smartly yet</li>
@@ -133,9 +150,11 @@
       <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/mdsumner/graticule"><img src="https://travis-ci.org/mdsumner/graticule.svg?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="http://www.r-pkg.org/pkg/graticule"><img src="http://www.r-pkg.org/badges/version/graticule"></a></li>
-<li><a href="http://www.r-pkg.org/pkg/graticule"><img src="http://cranlogs.r-pkg.org/badges/graticule"></a></li>
+<li><a href="https://travis-ci.org/mdsumner/graticule"><img src="https://travis-ci.org/mdsumner/graticule.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://ci.appveyor.com/project/mdsumner/graticule"><img src="https://ci.appveyor.com/api/projects/status/github/mdsumner/graticule?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
+<li><a href="https://codecov.io/gh/mdsumner/graticule?branch=master"><img src="https://codecov.io/gh/mdsumner/graticule/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://cran.r-project.org/package=graticule"><img src="https://www.r-pkg.org/badges/version/graticule" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=graticule"><img src="http://cranlogs.r-pkg.org/badges/graticule" alt="CRAN_Download_Badge"></a></li>
 </ul>
 </div>
 </div>

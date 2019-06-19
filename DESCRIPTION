@@ -29,7 +29,8 @@ Suggests:
     sf,
     spex,
     testthat,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr
 BugReports: https://github.com/mdsumner/graticule/issues
 URL: https://github.com/mdsumner/graticule

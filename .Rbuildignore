@@ -11,3 +11,5 @@ vignettes/*.png
 docs/*
 revdep/*
 ^CODE_OF_CONDUCT\.md$
+^appveyor\.yml$
+^codecov\.yml$

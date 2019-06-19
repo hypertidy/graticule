@@ -3,6 +3,7 @@
 
 language: R
 sudo: required
+cache: packages
 
 # https://github.com/ropensci/rgbif/blob/master/.travis.yml#L9
 dist: trusty
