@@ -17,6 +17,8 @@ before_install:
 compiler:
   - clang
 
+environment:
+  USE_RTOOLS: true
 
 after_success:
   - R -e 'covr::codecov()'
