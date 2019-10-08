@@ -48,6 +48,75 @@ specific longitude and latitude spacings and in a given projection.
 library(graticule)
 #> Loading required package: sp
 grat <- graticule(lons = seq(100, 220, by = 15), lats = seq(-60, -10, by = 5), proj = "+proj=laea +lon_0=140 +lat_0=-90 +datum=WGS84")
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
+#> Warning in .pointsToMatrix(p2): longitude > 180
+#> Warning in .pointsToMatrix(p1): longitude > 180
 plot(grat)
 ```
 

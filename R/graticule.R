@@ -131,6 +131,7 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = 
   if (missing(lats)) {
       lats <- seq(-90, 90, by = 10)
   }
+
 if (tiles) {
   pp <- graticule_tiles(lons, lats, proj = proj)
   return(pp)

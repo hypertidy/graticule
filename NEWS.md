@@ -1,4 +1,6 @@
-# graticule 0.1.5.9003
+# graticule 0.1.5.9005
+
+* Fix bug caused by new tile creation. https://github.com/AustralianAntarcticDivision/SOmap/issues/66
 
 * Tile and line graticules are now created by the same process, which discretizes
 to a default value of 5e4m (50km). This is settable with `options(graticule.mindist = )`. 

@@ -22,8 +22,10 @@ NULL
 graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, by = 12),
                             nverts = 24, proj = NULL,
                             margin = FALSE) {
+  if (length(lons) < 2) stop("length of argument `lons` is < 2")
+  if (length(lats) < 2) stop("length of argument `lats` is < 2")
   grid <- raster::raster(raster::extent(range(lons), range(lats)),
-                         ncols = length(lons) + 1, nrow = length(lats) + 1)
+                         ncols = length(lons)-1, nrow = length(lats)-1)
 
 
   if (margin) {
