@@ -1,4 +1,6 @@
-# graticule 0.1.5.9005
+# graticule 0.1.5.9006
+
+* Remove warnings from geosphere about longitude, thanks to @Maschette for the suggestion. 
 
 * Fix bug caused by new tile creation. https://github.com/AustralianAntarcticDivision/SOmap/issues/66
 

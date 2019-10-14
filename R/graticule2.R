@@ -64,7 +64,7 @@ ll_extent <- function(lonrange, latrange, nverts = 24, mindist = 1e5) {
   l <- lapply(seq(1, nrow(dat2), by = 2),
                 function(.x) {
                     xy <- dat2[c(.x, .x + 1), ]
-                    dst <- geosphere::distRhumb(xy[1, ], xy[2, ])
+                    suppressWarnings(dst <- geosphere::distRhumb(xy[1, ], xy[2, ]))
                     nn <- if (is.null(mindist)) nverts else round(dst/mindist)
                     nn <- max(c(nn, 3))  ## there's got to be a limit
                     cbind(stats::approx(xy[,1], n = nn)$y, approx(xy[,2], n = nn)$y)
