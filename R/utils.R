@@ -6,7 +6,6 @@ xrange <- function(x) {
 yrange <- function(x) {
   c(ymin(x), ymax(x))
 }
-
 ## from spex
 #' @importFrom quadmesh quadmesh
 #' @importFrom sf st_sfc st_as_sf
@@ -33,5 +32,6 @@ qm_rasterToPolygons <- function(x, all_layers = TRUE) {
 qm_rasterToPolygons_sp <- function(x) {
   as(qm_rasterToPolygons(x), "Spatial")
 }
+
 
 

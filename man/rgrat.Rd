@@ -4,8 +4,14 @@
 \alias{rgrat}
 \title{Generate random graticules.}
 \usage{
-rgrat(family = NULL, lon_0 = NULL, lat_0 = NULL, radius = NULL,
-  datum = NULL, ...)
+rgrat(
+  family = NULL,
+  lon_0 = NULL,
+  lat_0 = NULL,
+  radius = NULL,
+  datum = NULL,
+  ...
+)
 }
 \arguments{
 \item{family}{central longitude}
@@ -18,4 +24,3 @@ see \code{\link{auto_graticule}}
 \description{
 All arguments are optional and will be auto sampled sensibly if not specified.
 }
-

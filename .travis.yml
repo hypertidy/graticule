@@ -3,6 +3,7 @@
 
 language: R
 sudo: required
+cache: packages
 
 # https://github.com/ropensci/rgbif/blob/master/.travis.yml#L9
 dist: trusty
@@ -16,9 +17,8 @@ before_install:
 compiler:
   - clang
 
-
-r_github_packages:
-  - jimhester/covr
+environment:
+  USE_RTOOLS: true
 
 after_success:
   - R -e 'covr::codecov()'

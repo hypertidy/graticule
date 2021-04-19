@@ -1,16 +1,17 @@
-# graticule 0.1.5
+# graticule 0.1.5.9006
 
+<<<<<<< HEAD
 * added proj_family data set
 
 * added a message about a future migration to sf (simple features) return values, this version starts using sf internally, but still returns Spatial classes
+=======
+* Remove warnings from geosphere about longitude, thanks to @Maschette for the suggestion. 
+>>>>>>> master
 
-* line and tile collection and projection transformation is now done using sf, 
-with the OGR_ENABLE_PARTIAL_REPROJECTION environment variable set to TRUE. This 
-means a much wider variety of regions and projections can be successfully generated, 
-and the building will be a bit faster. 
+* Fix bug caused by new tile creation. https://github.com/AustralianAntarcticDivision/SOmap/issues/66
 
-* tile creation now performed with quadmesh, which is significantly faster and allows
-generation of much larger numbers of tiles
+* Tile and line graticules are now created by the same process, which discretizes
+to a default value of 5e4m (50km). This is settable with `options(graticule.mindist = )`. 
 
 * graticule no longer shares the extra dependency from raster on rgeos, rasterToPolygons is no longer used
 

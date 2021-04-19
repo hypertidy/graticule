@@ -8,8 +8,10 @@ output:
     fig_height: 9
 vignette: >
   %\VignetteIndexEntry{Graticule}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 

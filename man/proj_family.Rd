@@ -6,4 +6,3 @@
 \description{
 Data frame of \code{family} and \code{name} from PROJ.4.
 }
-

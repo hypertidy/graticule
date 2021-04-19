@@ -3,10 +3,29 @@
 #' @docType package
 #' @name graticule
 NULL
-limfun <- function(x, lim, nd = 60, meridian = TRUE) {
+limfun <- function(x, lim, meridian = TRUE) {
+
+  mindist <- getOption("graticule.mindist")
+  if (is.na(mindist) || is.null(mindist) || !is.numeric(mindist)) {
+    mindist <- 5e4
+    warning(sprintf("option('graticule.mindist') is malformed, using %fm", mindist))
+  }
+ if (!meridian) {
+    out <- ll_extent(lim, c(x, x), mindist = mindist)
+  } else {
+    out <- ll_extent(c(x, x), lim, mindist = mindist)
+  }
+  out
+}
+
+step_fun <- function(x, steps, nd = 60, meridian = TRUE) {
   ind <- 1:2
+
   if (!meridian) ind <- 2:1
-  cbind(x = x, y = seq(lim[1], lim[2], length = nd))[, ind]
+  op <- options(warn = -1)
+  on.exit(options(op))
+  step_seg <- as.data.frame(utils::head(matrix(steps, nrow = length(steps)+1, ncol = 2), -2))
+  lapply(split(step_seg, 1:nrow(step_seg)), function(a) cbind(x = x, y = seq(unlist(a)[1], unlist(a)[2], length = nd))[, ind])
 }
 
 buildlines <- function(x) {
@@ -42,9 +61,9 @@ lonlatp4 <- function() {
 #'
 #' Provide a valid PROJ.4 string to return the graticule lines in this projection. If this is not specified the graticule
 #' lines are returned in their original longlat / WGS84.
-#'
-#' The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}. Tiles
-#' are hardcoded to have 60 vertices per edge.
+#' All segments are discretized as _rhumb_lines_ at `getOption("graticule.mindist")` metres, which
+#' defaults to `5e4`.
+#' The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}.
 #' @param lons longitudes for meridional lines
 #' @param lats latitudes for parallel lines
 #' @param nverts number of discrete vertices for each segment
@@ -91,12 +110,18 @@ lonlatp4 <- function() {
 #' @importFrom raster isLonLat raster extent values<- ncell res
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
 graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
-  oepr <- Sys.getenv("OGR_ENABLE_PARTIAL_REPROJECTION")
-  Sys.setenv(OGR_ENABLE_PARTIAL_REPROJECTION = "TRUE")
-  on.exit(Sys.setenv(OGR_ENABLE_PARTIAL_REPROJECTION = oepr), add = TRUE)
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
+  if (tiles) {
+    if (!missing(xlim)) {
+      warning("xlim is ignored if 'tiles = TRUE'")
+    }
+    if (!missing(ylim)) {
+      warning("ylim is ignored if 'tiles = TRUE'")
+    }
+
+  }
   if (!raster::isLonLat(proj)) trans <- TRUE
   if (missing(lons)) {
     #usr <- par("usr")
@@ -106,30 +131,9 @@ graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = 
   if (missing(lats)) {
       lats <- seq(-90, 90, by = 10)
   }
-if (tiles) {
-  ## build a raster and return the polygons
-  rr <- raster::raster(extent(range(lons), range(lats)), nrows = length(lats)-1, ncols = length(lons)-1, crs = lonlatp4())
-  values(rr) <- seq(ncell(rr))
-  ## we need to not use raster for this
-  ##nodes <- c(4, 8, 16)[pmax(1, findInterval(nverts, c(2, 3, 5)))]
-##  rbenchmark::benchmark(g <- graticule(tiles = TRUE))
-##  test replications elapsed relative user.self sys.self user.child sys.child
-##  1 g <- graticule(tiles = TRUE)          100    7.24        1      7.24        0         NA        NA
-  #pp <- raster::rasterToPolygons(rr, dissolve = TRUE, n = nodes)
-  ##rbenchmark::benchmark(g <- graticule(tiles = TRUE))
-  ##test replications elapsed relative user.self sys.self user.child sys.child
-  ##1 g <- graticule(tiles = TRUE)          100    2.82        1      2.83        0         NA        NA
-  pp <- qm_rasterToPolygons(rr)
 
-  ## hard code to 15 points per pixel edge (for now)
-  ppg <- sf::st_segmentize(pp, dfMaxLength = min(raster::res(rr))/60L, warn = FALSE)
-  ## grr segmentize returns on the geometry ...
-  pp[["geometry"]] <- sf::st_geometry(ppg)
-  pp <- sf::st_as_sf(pp)
-  ##if (trans) pp <- sp::spTransform(pp, sp::CRS(proj))
-  if (trans) pp <- sf::st_transform(pp, proj)
-  pp <- as(pp, "Spatial")
-  message(sprintf("returning a %s but a future release with be sf", class(pp)))
+if (tiles) {
+  pp <- graticule_tiles(lons, lats, proj = proj)
   return(pp)
 }
   if (missing(xlim)) xlim <- range(lons)
@@ -142,21 +146,17 @@ if (tiles) {
   xs$type <- "meridian"
   ys$type <- "parallel"
   d <- rbind(xs, ys)
-#  coordinates(d) <- ~x+y
- # proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+  #  coordinates(d) <- ~x+y
+  # proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
   d0 <- split(d, d$id)
-  ll <- vector("list", length(d0))
-  #for (i in seq_along(d0)) l[[i]] <- sp::Lines(list(sp::Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
-  #l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(lonlatp4())),
-  #                      data.frame(ID = as.character(seq_along(l))))
-  for (i in seq_along(d0)) ll[[i]] <- sf::st_linestring(as.matrix(d0[[i]][, c("x", "y")]))
-  l <- data.frame(ID = as.character(seq_along(ll)), stringsAsFactors = TRUE) ## ewk
-  l[["geometry"]] <-sf::st_sfc(ll, crs = lonlatp4())
-  l <-sf::st_as_sf(l)
-  if (trans) l <- sf::st_transform(l, proj)
-  l <- as(l, "Spatial")
-  message(sprintf("returning a %s but a future release will be sf", class(l)))
+  l <- vector("list", length(d0))
+  for (i in seq_along(d0)) l[[i]] <- sp::Lines(list(sp::Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
+  l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(lonlatp4())),
+                                 data.frame(ID = as.character(seq_along(l))))
+  if (trans) l <- sp::spTransform(l, sp::CRS(proj))
   l
+  #d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
+
 }
 
 #' Create graticule labels.
@@ -208,7 +208,6 @@ graticule_labels <- function(lons, lats, xline, yline, proj = NULL) {
   if (trans) {
     l <- sp::spTransform(l, CRS(proj))
   }
-  message(sprintf("returning a %s but a future release will be sf", class(l)))
 
   l
 }
