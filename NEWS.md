@@ -1,4 +1,6 @@
-# graticule 0.1.5.9006
+# graticule 0.1.6
+
+* Release to fix problems on CRAN, unused LazyData and dep on rmarkdown. 
 
 * Remove warnings from geosphere about longitude, thanks to @Maschette for the suggestion. 
 
