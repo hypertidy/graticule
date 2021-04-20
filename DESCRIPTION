@@ -9,7 +9,6 @@ Description: Create graticule lines and labels for maps. Control the creation
     and extent (along parallels and meridians). Labels are created independently of
     lines.
 License: GPL-3
-LazyData: TRUE
 Depends:
     sp
 Imports:
@@ -34,4 +33,4 @@ Suggests:
 VignetteBuilder: knitr
 BugReports: https://github.com/mdsumner/graticule/issues
 URL: https://github.com/mdsumner/graticule
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
