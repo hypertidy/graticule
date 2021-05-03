@@ -2,8 +2,9 @@
 
 Fix CRAN problems, thank you. 
 
-* Remove LazyData field
-* Add rmarkdown in Suggests
+* Remove LazyData field. 
+
+* Add rmarkdown in Suggests. 
 
 ## Test environments
 
