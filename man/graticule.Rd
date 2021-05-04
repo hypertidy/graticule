@@ -5,7 +5,7 @@
 \alias{graticule}
 \title{graticule: graticule lines for maps}
 \usage{
-graticule(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE)
+graticule(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles = FALSE)
 }
 \arguments{
 \item{lons}{longitudes for meridional lines}

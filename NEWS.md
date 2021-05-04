@@ -1,3 +1,9 @@
+# graticule dev
+
+* update for #16, not great still but better
+
+
+
 # graticule 0.1.6
 
 * Release to fix problems on CRAN, unused LazyData and dep on rmarkdown. 

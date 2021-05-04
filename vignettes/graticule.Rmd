@@ -293,7 +293,7 @@ I tend to use the same terminology as used within [Manifold System](http://www.m
 
 ## References
 
-[Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.](https://pubs.er.usgs.gov/djvu/PP/PP_1395.pdf)
+[Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.](https://pubs.er.usgs.gov/publication/pp1395)
 
 ## Environment
 

@@ -48,75 +48,6 @@ specific longitude and latitude spacings and in a given projection.
 library(graticule)
 #> Loading required package: sp
 grat <- graticule(lons = seq(100, 220, by = 15), lats = seq(-60, -10, by = 5), proj = "+proj=laea +lon_0=140 +lat_0=-90 +datum=WGS84")
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
-#> Warning in .pointsToMatrix(p2): longitude > 180
-#> Warning in .pointsToMatrix(p1): longitude > 180
 plot(grat)
 ```
 
@@ -138,8 +69,7 @@ plot(as(grat, "SpatialPoints"))
 <img src="man/figures/README-rhumb-points-1.png" width="100%" />
 
 This also allows the common case of creating a sensible single polygon
-*wedge*,
-i.e.
+*wedge*, i.e. 
 
 ``` r
 wedge <- graticule(lons = c(-40, 40), lats = c(-60, -40), proj = "+proj=laea +lat_0=-50 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs")
@@ -153,13 +83,14 @@ Issues
 Please feel free to share your experiences and report problems at
 <https://github.com/mdsumner/graticule/issues>
 
-  - general problems with segmentation, this is not done smartly yet
-  - There’s work needed for when `graticule_labels()` are created
+-   general problems with segmentation, this is not done smartly yet
+-   There’s work needed for when `graticule_labels()` are created
     without using `xline/yline`, need more careful separation between
     generating every combination in the grid versus single lines
 
------
+------------------------------------------------------------------------
 
 Please note that the ‘graticule’ project is released with a [Contributor
-Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this project,
-you agree to abide by its terms.
+Code of
+Conduct](https://github.com/mdsumner/graticule/blob/master/CODE_OF_CONDUCT.md).
+By contributing to this project, you agree to abide by its terms.

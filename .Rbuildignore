@@ -13,3 +13,4 @@ revdep/*
 ^CODE_OF_CONDUCT\.md$
 ^appveyor\.yml$
 ^codecov\.yml$
+^CRAN-RELEASE$

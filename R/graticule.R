@@ -3,7 +3,7 @@
 #' @docType package
 #' @name graticule
 NULL
-limfun <- function(x, lim, meridian = TRUE) {
+limfun <- function(x, lim, meridian = TRUE, nverts = NULL) {
 
   mindist <- getOption("graticule.mindist")
   if (is.na(mindist) || is.null(mindist) || !is.numeric(mindist)) {
@@ -11,9 +11,9 @@ limfun <- function(x, lim, meridian = TRUE) {
     warning(sprintf("option('graticule.mindist') is malformed, using %fm", mindist))
   }
  if (!meridian) {
-    out <- ll_extent(lim, c(x, x), mindist = mindist)
+    out <- ll_extent(lim, c(x, x), mindist = mindist, nverts = nverts)
   } else {
-    out <- ll_extent(c(x, x), lim, mindist = mindist)
+    out <- ll_extent(c(x, x), lim, mindist = mindist, nverts = nverts)
   }
   out
 }
@@ -109,7 +109,7 @@ lonlatp4 <- function() {
 #'  }}
 #' @importFrom raster isLonLat raster extent values<- ncell res
 #' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
-graticule <- function(lons, lats, nverts = 60, xlim, ylim, proj = NULL, tiles = FALSE) {
+graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles = FALSE) {
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
@@ -138,8 +138,8 @@ if (tiles) {
 }
   if (missing(xlim)) xlim <- range(lons)
   if (missing(ylim)) ylim <- range(lats)
-  xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE)
-  yline <- lapply(lats, limfun, lim = xlim, meridian = FALSE)
+  xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE, nverts = nverts)
+  yline <- lapply(lats, limfun, lim = xlim, meridian = FALSE, nverts = nverts)
   xs <- buildlines(xline)
   ys <- buildlines(yline)
   ys$id <- ys$id + max(xs$id)
