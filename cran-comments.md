@@ -2,13 +2,11 @@
 
 Fix CRAN problems, thank you. 
 
-* Remove LazyData field. 
-
-* Add rmarkdown in Suggests. 
+* Remove unused quadmesh.  
 
 ## Test environments
 
-* local Windows R 4.0.4
+* local Windows R 4.1.0
 * win-builder (devel)
 
 ## R CMD check results

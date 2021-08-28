@@ -2,7 +2,9 @@
 
 export(graticule)
 export(graticule_labels)
+export(lonlat)
 export(pathologicule)
+importFrom(graphics,contour)
 importFrom(raster,"projection<-")
 importFrom(raster,"values<-")
 importFrom(raster,extent)

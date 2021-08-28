@@ -1,5 +1,8 @@
 # graticule dev
 
+* New function `lonlat()` for quick and dirty plots and to generate fields of longitude and  
+ latitude. 
+
 * update for #16, not great still but better
 
 
