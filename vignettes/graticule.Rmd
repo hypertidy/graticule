@@ -42,21 +42,17 @@ This is an area that needs much more discussion and outlining of needs and exper
 
 # Examples
 
-ALL EXAMPLES REMOVED, FIXME. 
 
-A simple example uses data from rworldmap to build a map around the state of Victoria in Australia. Victoria uses a local Lambert Conformal Conic projection that was introduced while the shift to GDA94 was implemented, to reduce complications due to working with more than one UTM zone for the state.     
+A simple example to build a map around the state of Victoria in Australia. Victoria uses a local Lambert Conformal Conic projection that was introduced while the shift to GDA94 was implemented, to reduce complications due to working with more than one UTM zone for the state.     
 
 ```{r,message=FALSE, eval=FALSE}
 library(raster)
 
-llproj <- projection(countriesLow)
 library(graticule)
-#map<- subset(countriesLow, SOVEREIGNT == "Australia")
 
 ## VicGrid
 prj <- "+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 
-#pmap <- spTransform(map, CRS(prj))
 
 ## specify exactly where we want meridians and parallels
 lons <- seq(140, 150, length = 5)
@@ -130,7 +126,7 @@ par(op)
 
 **This section kept for historical interest only. **
 
-See: https://github.com/mdsumner/graticule/issues/19#issuecomment-1379874409
+See: https://github.com/hypertidy/graticule/issues/19#issuecomment-1379874409
 
 
 

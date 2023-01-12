@@ -1,13 +1,16 @@
-## graticule 0.1.6
+## graticule 0.2.0
 
-Fix CRAN problems, thank you. 
+Release to remove dependency rgdal. 
 
-* Remove unused quadmesh.  
+* Removed rgdal, maptools, rworldmap, oce from Suggests, and tested check succeeds without
+ those being installed.
+ 
 
 ## Test environments
 
-* local Windows R 4.1.0
-* win-builder (devel)
+* win-builder (release and devel)
+* Linux local release, github actions
+* macbuilder
 
 ## R CMD check results
 

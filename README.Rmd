@@ -19,7 +19,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/graticule)](https://cran.r-project.org/package=graticule)
 [![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/graticule)](https://cran.r-project.org/package=graticule)
-[![R-CMD-check](https://github.com/mdsumner/graticule/workflows/R-CMD-check/badge.svg)](https://github.com/mdsumner/graticule/actions)
+[![R-CMD-check](https://github.com/hypertidy/graticule/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/graticule/actions)
+[![R-CMD-check](https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 
@@ -38,7 +39,7 @@ And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("mdsumner/graticule")
+devtools::install_github("hypertidy/graticule")
 ```
 ## Example
 
@@ -92,11 +93,12 @@ raster::plot(ice, col = palr::ice_pal(100))
 raster::contour(lon, add = TRUE)
 lonlat(ice, lat = TRUE, levels = seq(-85, -40, by = 5))
 
+
 ```
 
 ## Known Issues
 
-Please feel free to share your experiences and report problems at https://github.com/mdsumner/graticule/issues
+Please feel free to share your experiences and report problems at https://github.com/hypertidy/graticule/issues
 
 * general problems with segmentation, this is not done smartly yet (see hypertidy/bigcurve or the s2 package)
 * There's work needed for when `graticule_labels()` are created without using `xline/yline`, need more careful separation between generating every combination in the grid versus single lines
@@ -105,5 +107,5 @@ Please feel free to share your experiences and report problems at https://github
 ---
 
  Please note that the 'graticule' project is released with a
-  [Contributor Code of Conduct](https://github.com/mdsumner/graticule/blob/master/CODE_OF_CONDUCT.md).
+  [Contributor Code of Conduct](https://github.com/hypertidy/graticule/blob/master/CODE_OF_CONDUCT.md).
   By contributing to this project, you agree to abide by its terms.

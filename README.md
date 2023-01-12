@@ -7,8 +7,9 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/graticule)](https://cran.r-project.org/package=graticule)
-[![CRAN\_Download\_Badge](http://cranlogs.r-pkg.org/badges/graticule)](https://cran.r-project.org/package=graticule)
-[![R-CMD-check](https://github.com/mdsumner/graticule/workflows/R-CMD-check/badge.svg)](https://github.com/mdsumner/graticule/actions)
+[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/graticule)](https://cran.r-project.org/package=graticule)
+[![R-CMD-check](https://github.com/hypertidy/graticule/workflows/R-CMD-check/badge.svg)](https://github.com/hypertidy/graticule/actions)
+[![R-CMD-check](https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Graticules are the longitude latitude lines shown on a projected map,
@@ -31,7 +32,7 @@ And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("mdsumner/graticule")
+devtools::install_github("hypertidy/graticule")
 ```
 
 ## Example
@@ -85,12 +86,6 @@ Sometimes it’s enough, sometimes we can muck around to get what we want.
 ``` r
 tfile <- system.file("extdata",  "nt_20140320_f17_v01_s.bin", package = "graticule", mustWork = TRUE)
 ice <- raster::raster(tfile)
-#> Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj
-#> = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere
-#> +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m
-#> +no_defs +type=crs
-#> Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =
-#> prefer_proj): Discarded datum unknown in Proj4 definition
 ice[!ice > 0] <- NA
 raster::plot(ice, col = palr::ice_pal(100))
 lonlat(ice)
@@ -99,6 +94,7 @@ lonlat(ice)
 <img src="man/figures/README-lonlat-1.png" width="100%" />
 
 ``` r
+
 raster::plot(ice, col = palr::ice_pal(100))
 lonlat(ice, lon = TRUE, levels = seq(-180, 165, by = 15))
 lonlat(ice, lat = TRUE, levels = seq(-85, -40, by = 5))
@@ -107,6 +103,7 @@ lonlat(ice, lat = TRUE, levels = seq(-85, -40, by = 5))
 <img src="man/figures/README-lonlat-2.png" width="100%" />
 
 ``` r
+
 ## not much good so let's get the actual arrays
 lon <- lonlat(ice, plot = FALSE)[[1]]
 lat <- lonlat(ice,  plot = FALSE)[[2]]
@@ -121,9 +118,10 @@ lonlat(ice, lat = TRUE, levels = seq(-85, -40, by = 5))
 ## Known Issues
 
 Please feel free to share your experiences and report problems at
-<https://github.com/mdsumner/graticule/issues>
+<https://github.com/hypertidy/graticule/issues>
 
 -   general problems with segmentation, this is not done smartly yet
+    (see hypertidy/bigcurve or the s2 package)
 -   There’s work needed for when `graticule_labels()` are created
     without using `xline/yline`, need more careful separation between
     generating every combination in the grid versus single lines
@@ -132,5 +130,5 @@ Please feel free to share your experiences and report problems at
 
 Please note that the ‘graticule’ project is released with a [Contributor
 Code of
-Conduct](https://github.com/mdsumner/graticule/blob/master/CODE_OF_CONDUCT.md).
+Conduct](https://github.com/hypertidy/graticule/blob/master/CODE_OF_CONDUCT.md).
 By contributing to this project, you agree to abide by its terms.
