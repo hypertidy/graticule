@@ -71,6 +71,7 @@ lonlatp4 <- function() {
 #' @param ylim maximum range of meridional lines
 #' @param proj optional proj.4 string for output object
 #' @param tiles if \code{TRUE} return polygons as output
+#' @return SpatialLines or SpatialPolygons object
 #' @export
 #' @importFrom reproj reproj_xy
 #' @importFrom raster isLonLat raster extent values<- ncell res
@@ -144,6 +145,7 @@ graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles 
 #' @param proj optional proj.4 string for output object
 #' @export
 #' @importFrom sp degreeLabelsEW degreeLabelsNS coordinates<- proj4string<-
+#' @return SpatialPoints object with labels for downstream use
 #' @examples
 #' xx <- c(100, 120, 160, 180)
 #' yy <- c(-80,-70,-60, -50,-45, -30)

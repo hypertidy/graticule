@@ -15,6 +15,8 @@
 #'
 #' @return RasterBrick of the longitude and latitude values,  two layers
 #' @export
+#' @return (invisibly) the raster (RasterBrick) object with longitude and latitude values of the input
+#'  as two layers, otherwise this function used for side-effect (drawing on a plot)
 #' @importFrom graphics contour
 #' @examples
 #' plot(c(-180, 180), c(-90, 90))

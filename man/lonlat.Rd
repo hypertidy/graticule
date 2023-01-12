@@ -31,6 +31,9 @@ lonlat(
 }
 \value{
 RasterBrick of the longitude and latitude values,  two layers
+
+(invisibly) the raster (RasterBrick) object with longitude and latitude values of the input
+ as two layers, otherwise this function used for side-effect (drawing on a plot)
 }
 \description{
 Use the coordinates of the input raster to generate coordinate rasters, these are

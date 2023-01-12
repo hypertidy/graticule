@@ -17,6 +17,9 @@ graticule_labels(lons, lats, xline, yline, proj = NULL)
 
 \item{proj}{optional proj.4 string for output object}
 }
+\value{
+SpatialPoints object with labels for downstream use
+}
 \description{
 Returns a set of points with labels, for plotting in conjuction with \code{\link{graticule}}.
 }

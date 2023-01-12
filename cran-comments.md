@@ -5,6 +5,9 @@ Release to remove dependency rgdal.
 * Removed rgdal, maptools, rworldmap, oce from Suggests, and tested check succeeds without
  those being installed.
  
+* Documented the return values of all functions. 
+
+Thank you!
 
 ## Test environments
 

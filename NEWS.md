@@ -1,5 +1,7 @@
 # graticule 0.2.0
 
+* Now return values of functions are documented. 
+
 * Now import the reproj package for the coordinate transformation support. 
 
 * Removed function `pathologicule()`, no one will miss it. Might reappear as {gridicule} when we have
