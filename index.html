@@ -13,7 +13,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Meridional and Parallel Lines for Maps">
 <meta property="og:description" content="Create graticule lines and labels for maps. Control the creation
-    of lines by setting their placement (at particular meridians and parallels)
+    of lines or tiles by setting their placement (at particular meridians and parallels)
     and extent (along parallels and meridians). Labels are created independently of
     lines.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,18 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">graticule</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/graticule.html">Get started</a>
 </li>
@@ -58,7 +54,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/mdsumner/graticule/">
+  <a href="https://github.com/hypertidy/graticule/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -75,141 +71,148 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="graticule" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#graticule" class="anchor"></a>graticule</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="graticule">graticule<a class="anchor" aria-label="anchor" href="#graticule"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the tools to create and draw these lines by explicit specification by the user. This provides a good compromise between high-level automation and the flexibility to drive the low level details as needed, using base graphics in R.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of graticule from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of graticule from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"graticule"</span><span class="op">)</span></code></pre></div>
-<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"graticule"</span><span class="op">)</span></span></code></pre></div>
+<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"mdsumner/graticule"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"hypertidy/graticule"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <p>This is a basic example which shows how to create a graticule at specific longitude and latitude spacings and in a given projection.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mdsumner/graticule">graticule</a></span><span class="op">)</span>
-<span class="co">#&gt; Loading required package: sp</span>
-<span class="va">grat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">220</span>, by <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>, lats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">10</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, proj <span class="op">=</span> <span class="st">"+proj=laea +lon_0=140 +lat_0=-90 +datum=WGS84"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">grat</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/graticule" class="external-link">graticule</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: sp</span></span>
+<span><span class="va">grat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">220</span>, by <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>, lats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">10</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, proj <span class="op">=</span> <span class="st">"+proj=laea +lon_0=140 +lat_0=-90 +datum=WGS84"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">grat</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" width="100%"></p>
-<p>There is an automatic segmentation that is done at equal distances along these <a href="https://en.wikipedia.org/wiki/Rhumb_line">rhumb lines</a>. This is not an <em><a href="https://bost.ocks.org/mike/example/">ideal spacing</a></em> but is an improvement on the common alternatives, and is easier to work with when you need fine control.</p>
+<p>There is an automatic segmentation that is done at equal distances along these <a href="https://en.wikipedia.org/wiki/Rhumb_line" class="external-link">rhumb lines</a>. This is not an <em><a href="https://bost.ocks.org/mike/example/" class="external-link">ideal spacing</a></em> but is an improvement on the common alternatives, and is easier to work with when you need fine control.</p>
 <p>If your projection is not wildly warped in most areas then the default rhumb line segmentation is the best first step.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">grat</span>, <span class="st">"SpatialPoints"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">grat</span>, <span class="st">"SpatialPoints"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-rhumb-points-1.png" width="100%"></p>
 <p>This also allows the common case of creating a sensible single polygon <em>wedge</em>, i.e. </p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">wedge</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">40</span><span class="op">)</span>, lats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">40</span><span class="op">)</span>, proj <span class="op">=</span> <span class="st">"+proj=laea +lat_0=-50 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">wedge</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">wedge</span>, <span class="st">"SpatialPoints"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">wedge</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="fl">40</span><span class="op">)</span>, lats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">40</span><span class="op">)</span>, proj <span class="op">=</span> <span class="st">"+proj=laea +lat_0=-50 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">wedge</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">wedge</span>, <span class="st">"SpatialPoints"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-wedge-1.png" width="100%"></p>
 </div>
-<div id="quick-and-dirty-plot" class="section level2">
-<h2 class="hasAnchor">
-<a href="#quick-and-dirty-plot" class="anchor"></a>Quick and dirty plot</h2>
+<div class="section level2">
+<h2 id="quick-and-dirty-plot">Quick and dirty plot<a class="anchor" aria-label="anchor" href="#quick-and-dirty-plot"></a>
+</h2>
 <p>Give it a raster and let it plot, can provide <code>levels</code> as per contour (values of longitude or latitude to draw as lines), and separate longitude or latitude plot on their own.</p>
 <p>Sometimes it’s enough, sometimes we can muck around to get what we want.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,  <span class="st">"nt_20140320_f17_v01_s.bin"</span>, package <span class="op">=</span> <span class="st">"graticule"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="va">ice</span><span class="op">[</span><span class="op">!</span><span class="va">ice</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>
-<span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="fu">palr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/palr/man/ice_pal.html">ice_pal</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,  <span class="st">"nt_20140320_f17_v01_s.bin"</span>, package <span class="op">=</span> <span class="st">"graticule"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span></span>
+<span><span class="va">ice</span><span class="op">[</span><span class="op">!</span><span class="va">ice</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="fu">palr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/palr/man/ice_pal.html" class="external-link">ice_pal</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-lonlat-1.png" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="fu">palr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/palr/man/ice_pal.html">ice_pal</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, lon <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">165</span>, by <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, lat <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">85</span>, <span class="op">-</span><span class="fl">40</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="fu">palr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/palr/man/ice_pal.html" class="external-link">ice_pal</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, lon <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">165</span>, by <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, lat <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">85</span>, <span class="op">-</span><span class="fl">40</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-lonlat-2.png" width="100%"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## not much good so let's get the actual arrays</span>
-<span class="va">lon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="va">lat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>,  plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>
-<span class="va">lon</span><span class="op">[</span><span class="va">lat</span> <span class="op">&lt;</span> <span class="op">-</span><span class="fl">85</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>
-<span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="fu">palr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/palr/man/ice_pal.html">ice_pal</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-<span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/contour.html">contour</a></span><span class="op">(</span><span class="va">lon</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, lat <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">85</span>, <span class="op">-</span><span class="fl">40</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co">## not much good so let's get the actual arrays</span></span>
+<span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>,  plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">lon</span><span class="op">[</span><span class="va">lat</span> <span class="op">&lt;</span> <span class="op">-</span><span class="fl">85</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ice</span>, col <span class="op">=</span> <span class="fu">palr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/palr/man/ice_pal.html" class="external-link">ice_pal</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="va">lon</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/lonlat.html">lonlat</a></span><span class="op">(</span><span class="va">ice</span>, lat <span class="op">=</span> <span class="cn">TRUE</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">85</span>, <span class="op">-</span><span class="fl">40</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-lonlat-3.png" width="100%"></p>
 </div>
-<div id="known-issues" class="section level2">
-<h2 class="hasAnchor">
-<a href="#known-issues" class="anchor"></a>Known Issues</h2>
-<p>Please feel free to share your experiences and report problems at <a href="https://github.com/mdsumner/graticule/issues" class="uri">https://github.com/mdsumner/graticule/issues</a></p>
+<div class="section level2">
+<h2 id="known-issues">Known Issues<a class="anchor" aria-label="anchor" href="#known-issues"></a>
+</h2>
+<p>Please feel free to share your experiences and report problems at <a href="https://github.com/hypertidy/graticule/issues" class="external-link uri">https://github.com/hypertidy/graticule/issues</a></p>
 <ul>
-<li>general problems with segmentation, this is not done smartly yet</li>
+<li>general problems with segmentation, this is not done smartly yet (see hypertidy/bigcurve or the s2 package)</li>
 <li>There’s work needed for when <code><a href="reference/graticule_labels.html">graticule_labels()</a></code> are created without using <code>xline/yline</code>, need more careful separation between generating every combination in the grid versus single lines</li>
 </ul>
 <hr>
-<p>Please note that the ‘graticule’ project is released with a <a href="https://github.com/mdsumner/graticule/blob/master/CODE_OF_CONDUCT.md">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<p>Please note that the ‘graticule’ project is released with a <a href="https://github.com/hypertidy/graticule/blob/master/CODE_OF_CONDUCT.md" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=graticule">https://​cloud.r-project.org/​package=graticule</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/mdsumner/graticule/">https://​github.com/​mdsumner/​graticule/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/mdsumner/graticule/issues">https://​github.com/​mdsumner/​graticule/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=graticule" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/hypertidy/graticule/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/hypertidy/graticule/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing graticule</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Michael D. Sumner <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=graticule"><img src="https://www.r-pkg.org/badges/version/graticule" alt="CRAN status"></a></li>
-<li><a href="https://cran.r-project.org/package=graticule"><img src="http://cranlogs.r-pkg.org/badges/graticule" alt="CRAN_Download_Badge"></a></li>
-<li><a href="https://github.com/mdsumner/graticule/actions"><img src="https://github.com/mdsumner/graticule/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://cran.r-project.org/package=graticule" class="external-link"><img src="https://www.r-pkg.org/badges/version/graticule" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=graticule" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/graticule" alt="CRAN_Download_Badge"></a></li>
+<li><a href="https://github.com/hypertidy/graticule/actions" class="external-link"><img src="https://github.com/hypertidy/graticule/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Michael D. Sumner.</p>
+  <p></p>
+<p>Developed by Michael D. Sumner.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -217,6 +220,8 @@
 
   
 
+
+  
 
   </body>
 </html>

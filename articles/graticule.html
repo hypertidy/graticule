@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">graticule</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/graticule.html">Get started</a>
 </li>
@@ -55,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/mdsumner/graticule/">
+  <a href="https://github.com/hypertidy/graticule/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -70,15 +66,16 @@
 
       
 
-      </header><script src="graticule_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Graticule</h1>
-                        <h4 class="author">Michael D. Sumner</h4>
+                        <h4 data-toc-skip class="author">Michael D.
+Sumner</h4>
             
-            <h4 class="date">2021-08-28</h4>
+            <h4 data-toc-skip class="date">2023-01-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/mdsumner/graticule/blob/master/vignettes/graticule.Rmd"><code>vignettes/graticule.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/hypertidy/graticule/blob/HEAD/vignettes/graticule.Rmd" class="external-link"><code>vignettes/graticule.Rmd</code></a></small>
       <div class="hidden name"><code>graticule.Rmd</code></div>
 
     </div>
@@ -86,481 +83,250 @@
     
     
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<pre><code>## Loading required package: sp</code></pre>
-<pre><code>## rgdal: version: 1.5-23, (SVN revision 1121)
-## Geospatial Data Abstraction Library extensions to R successfully loaded
-## Loaded GDAL runtime: GDAL 3.0.4, released 2020/01/28
-## Path to GDAL shared files: /usr/share/gdal
-## GDAL binary built with GEOS: TRUE 
-## Loaded PROJ runtime: Rel. 6.3.1, February 10th, 2020, [PJ_VERSION: 631]
-## Path to PROJ shared files: /usr/share/proj
-## Linking to sp version:1.4-5
-## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
-## use options("rgdal_show_exportToProj4_warnings"="none") before loading rgdal.</code></pre>
-<div id="graticule" class="section level1">
-<h1 class="hasAnchor">
-<a href="#graticule" class="anchor"></a>Graticule</h1>
-<p>Graticules are the longitude latitude lines shown on a projected map, and defining and drawing these lines is not easy to automate. The graticule package provides the tools to create and draw these lines by explicit specification by the user. This provides a good compromise between high-level automation and the flexibility to drive the low level details as needed, using base graphics in R.</p>
-<p>Please note that this is an evolving topic, across a number of packages in R. There’s no ongoing integration of how best to do this, and some of the commentary in this vignette will be out of date quickly as individual packages do updates. I’ve recorded the exact versions used for this document at the end.</p>
-<p>This is an area that needs much more discussion and outlining of needs and experiences.</p>
+<div class="section level2">
+<h2 id="graticule">Graticule<a class="anchor" aria-label="anchor" href="#graticule"></a>
+</h2>
+<p>Graticules are the longitude latitude lines shown on a projected map,
+and defining and drawing these lines is not easy to automate. The
+graticule package provides the tools to create and draw these lines by
+explicit specification by the user. This provides a good compromise
+between high-level automation and the flexibility to drive the low level
+details as needed, using base graphics in R.</p>
+<p>Please note that this is an evolving topic, across a number of
+packages in R. There’s no ongoing integration of how best to do this,
+and some of the commentary in this vignette will be out of date quickly
+as individual packages do updates. I’ve recorded the exact versions used
+for this document at the end.</p>
+<p>This is an area that needs much more discussion and outlining of
+needs and experiences.</p>
 </div>
-<div id="examples" class="section level1">
-<h1 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h1>
-<p>A simple example uses data from rworldmap to build a map around the state of Victoria in Australia. Victoria uses a local Lambert Conformal Conic projection that was introduced while the shift to GDA94 was implemented, to reduce complications due to working with more than one UTM zone for the state.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://rgdal.r-forge.r-project.org">rgdal</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AndySouth/rworldmap/">rworldmap</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">countriesLow</span><span class="op">)</span>
-<span class="va">llproj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">countriesLow</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mdsumner/graticule">graticule</a></span><span class="op">)</span>
-<span class="va">map</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/subset.html">subset</a></span><span class="op">(</span><span class="va">countriesLow</span>, <span class="va">SOVEREIGNT</span> <span class="op">==</span> <span class="st">"Australia"</span><span class="op">)</span>
-
-<span class="co">## VicGrid</span>
-<span class="va">prj</span> <span class="op">&lt;-</span> <span class="st">"+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"</span>
-
-<span class="va">pmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/spTransform-methods.html">spTransform</a></span><span class="op">(</span><span class="va">map</span>, <span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/CRS-class.html">CRS</a></span><span class="op">(</span><span class="va">prj</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span>
-<span class="co">#&gt; Warning in spTransform(xSP, CRSobj, ...): NULL source CRS comment, falling back</span>
-<span class="co">#&gt; to PROJ string</span>
-<span class="co">#&gt; Warning in wkt(obj): CRS object has no comment</span>
-
-<span class="co">## specify exactly where we want meridians and parallels</span>
-<span class="va">lons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">140</span>, <span class="fl">150</span>, length <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="va">lats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">35</span>, length <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="co">## optionally, specify the extents of the meridians and parallels</span>
-<span class="co">## here we push them out a little on each side</span>
-<span class="va">xl</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">lons</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.4</span><span class="op">)</span>
-<span class="va">yl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">lats</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.4</span><span class="op">)</span>
-<span class="co">## build the lines with our precise locations and ranges</span>
-<span class="va">grat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule.html">graticule</a></span><span class="op">(</span><span class="va">lons</span>, <span class="va">lats</span>, proj <span class="op">=</span> <span class="va">prj</span>, xlim <span class="op">=</span> <span class="va">xl</span>, ylim <span class="op">=</span> <span class="va">yl</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span>
-<span class="co">## build the labels, here they sit exactly on the western and northern extent</span>
-<span class="co">## of our line ranges</span>
-<span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule_labels.html">graticule_labels</a></span><span class="op">(</span><span class="va">lons</span>, <span class="va">lats</span>, xline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">xl</span><span class="op">)</span>, yline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">yl</span><span class="op">)</span>, proj <span class="op">=</span> <span class="va">prj</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span>
-
-<span class="co">## set up a map extent and plot</span>
-<span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="va">grat</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e5</span>, asp <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"n"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">pmap</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">## the lines are a SpatialLinesDataFrame</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">grat</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lty <span class="op">=</span> <span class="fl">5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## the labels are a SpatialPointsDataFrame, and islon tells us which kind</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/subset.html">subset</a></span><span class="op">(</span><span class="va">labs</span>, <span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">)</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">]</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/subset.html">subset</a></span><span class="op">(</span><span class="va">labs</span>, <span class="op">!</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">)</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">[</span><span class="op">!</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">]</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p><img src="README-unnamed-chunk-2-1.png" width="700"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></code></pre></div>
-<div id="a-polar-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-polar-example" class="anchor"></a>A polar example</h2>
-<p>Download some sea ice concentration data and plot with a graticule. These passive microwave data are defined on a Polar Stereographic grid on the Hughes ellipsoid (predating WGS84), and there are daily files available since 1978. This is not the prettiest map, but the example is showing how we have control over exactly where the lines are created. We can build the lines anywhere, not necessarily at regular intervals or rounded numbers, and we can over or under extend the parallels relative to the meridians and vice versa.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mdsumner/graticule">graticule</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://rgdal.r-forge.r-project.org">rgdal</a></span><span class="op">)</span>
-<span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,  <span class="st">"nt_20140320_f17_v01_s.bin"</span>, package <span class="op">=</span> <span class="st">"graticule"</span><span class="op">)</span>
-<span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-
-<span class="va">meridians</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">160</span>, by <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="va">parallels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">80</span>, <span class="op">-</span><span class="fl">73.77</span>, <span class="op">-</span><span class="fl">68</span>, <span class="op">-</span><span class="fl">55</span>, <span class="op">-</span><span class="fl">45</span><span class="op">)</span>
-<span class="va">mlim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span><span class="op">)</span>
-<span class="va">plim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">88</span>, <span class="op">-</span><span class="fl">50</span><span class="op">)</span>
-<span class="va">grat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="va">meridians</span>, lats <span class="op">=</span> <span class="va">parallels</span>, xlim <span class="op">=</span> <span class="va">mlim</span>, ylim <span class="op">=</span> <span class="va">plim</span>, proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule_labels.html">graticule_labels</a></span><span class="op">(</span><span class="va">meridians</span>, <span class="va">parallels</span>, xline <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, yline <span class="op">=</span> <span class="op">-</span><span class="fl">60</span>, proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">grat</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">labs</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text<span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">)</span>, col<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"firebrick"</span>, <span class="st">"darkblue"</span><span class="op">)</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"Sea ice concentration %s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">".bin"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html">basename</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, cex.main <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span>sub <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, cex.sub <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<p>A simple example to build a map around the state of Victoria in
+Australia. Victoria uses a local Lambert Conformal Conic projection that
+was introduced while the shift to GDA94 was implemented, to reduce
+complications due to working with more than one UTM zone for the
+state.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/graticule" class="external-link">graticule</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## VicGrid</span></span>
+<span><span class="va">prj</span> <span class="op">&lt;-</span> <span class="st">"+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"</span></span>
+<span></span>
+<span></span>
+<span><span class="co">## specify exactly where we want meridians and parallels</span></span>
+<span><span class="va">lons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">140</span>, <span class="fl">150</span>, length <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">lats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">35</span>, length <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="co">## optionally, specify the extents of the meridians and parallels</span></span>
+<span><span class="co">## here we push them out a little on each side</span></span>
+<span><span class="va">xl</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">lons</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.4</span><span class="op">)</span></span>
+<span><span class="va">yl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">lats</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.4</span><span class="op">)</span></span>
+<span><span class="co">## build the lines with our precise locations and ranges</span></span>
+<span><span class="va">grat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule.html">graticule</a></span><span class="op">(</span><span class="va">lons</span>, <span class="va">lats</span>, proj <span class="op">=</span> <span class="va">prj</span>, xlim <span class="op">=</span> <span class="va">xl</span>, ylim <span class="op">=</span> <span class="va">yl</span><span class="op">)</span></span>
+<span><span class="co">## build the labels, here they sit exactly on the western and northern extent</span></span>
+<span><span class="co">## of our line ranges</span></span>
+<span><span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule_labels.html">graticule_labels</a></span><span class="op">(</span><span class="va">lons</span>, <span class="va">lats</span>, xline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">xl</span><span class="op">)</span>, yline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">yl</span><span class="op">)</span>, proj <span class="op">=</span> <span class="va">prj</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## set up a map extent and plot</span></span>
+<span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html" class="external-link">extent</a></span><span class="op">(</span><span class="va">grat</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e5</span>, asp <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"n"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
+<span><span class="co">#plot(pmap, add = TRUE)</span></span>
+<span><span class="co">## the lines are a SpatialLinesDataFrame</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">grat</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lty <span class="op">=</span> <span class="fl">5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">## the labels are a SpatialPointsDataFrame, and islon tells us which kind</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">labs</span>, <span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">)</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">]</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">labs</span>, <span class="op">!</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">)</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">[</span><span class="op">!</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">]</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="a-polar-example">A polar example<a class="anchor" aria-label="anchor" href="#a-polar-example"></a>
+</h3>
+<p>Download some sea ice concentration data and plot with a graticule.
+These passive microwave data are defined on a Polar Stereographic grid
+on the Hughes ellipsoid (predating WGS84), and there are daily files
+available since 1978. This is not the prettiest map, but the example is
+showing how we have control over exactly where the lines are created. We
+can build the lines anywhere, not necessarily at regular intervals or
+rounded numbers, and we can over or under extend the parallels relative
+to the meridians and vice versa.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hypertidy/graticule" class="external-link">graticule</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,  <span class="st">"nt_20140320_f17_v01_s.bin"</span>, package <span class="op">=</span> <span class="st">"graticule"</span><span class="op">)</span></span>
+<span><span class="va">ice</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">meridians</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">160</span>, by <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">parallels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">80</span>, <span class="op">-</span><span class="fl">73.77</span>, <span class="op">-</span><span class="fl">68</span>, <span class="op">-</span><span class="fl">55</span>, <span class="op">-</span><span class="fl">45</span><span class="op">)</span></span>
+<span><span class="va">mlim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span><span class="op">)</span></span>
+<span><span class="va">plim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">88</span>, <span class="op">-</span><span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">grat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="va">meridians</span>, lats <span class="op">=</span> <span class="va">parallels</span>, xlim <span class="op">=</span> <span class="va">mlim</span>, ylim <span class="op">=</span> <span class="va">plim</span>, proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html" class="external-link">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule_labels.html">graticule_labels</a></span><span class="op">(</span><span class="va">meridians</span>, <span class="va">parallels</span>, xline <span class="op">=</span> <span class="op">-</span><span class="fl">45</span>, yline <span class="op">=</span> <span class="op">-</span><span class="fl">60</span>, proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html" class="external-link">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ice</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">grat</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">labs</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text<span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">)</span>, col<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"firebrick"</span>, <span class="st">"darkblue"</span><span class="op">)</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Sea ice concentration %s"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">".bin"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">tfile</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, cex.main <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span>sub <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html" class="external-link">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, cex.sub <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
 <p><img src="README-unnamed-chunk-3-1.png" width="700"></p>
 </div>
-<div id="create-the-graticule-as-polygons" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-the-graticule-as-polygons" class="anchor"></a>Create the graticule as polygons</h2>
-<p>Continuing from the sea ice example, build the graticule grid as actual polygons. Necessarily the <code>xlim/ylim</code> option is ignored since we have not specified sensibly closed polygonal rings where there are under or over laps.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">polargrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">meridians</span>, <span class="fl">180</span><span class="op">)</span>, lats <span class="op">=</span> <span class="va">parallels</span>,  proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, tiles <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="va">centroids</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/project.html">project</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/xyFromCell.html">coordinates</a></span><span class="op">(</span><span class="va">polargrid</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, inv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule_labels.html">graticule_labels</a></span><span class="op">(</span><span class="va">meridians</span>, <span class="va">parallels</span>,  proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="co">#labs &lt;- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))</span>
-<span class="co">#labs &lt;- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix</span>
-<span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/colors.html">colors</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/raster/man/ncell.html">nrow</a></span><span class="op">(</span><span class="va">polargrid</span><span class="op">)</span><span class="op">)</span>
-<span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">polargrid</span>, col  <span class="op">=</span> <span class="va">cols</span>, bg <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">labs</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span>, <span class="op">]</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">]</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"white"</span>,  cex <span class="op">=</span> <span class="fl">0.9</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<div class="section level3">
+<h3 id="create-the-graticule-as-polygons">Create the graticule as polygons<a class="anchor" aria-label="anchor" href="#create-the-graticule-as-polygons"></a>
+</h3>
+<p>Continuing from the sea ice example, build the graticule grid as
+actual polygons. Necessarily the <code>xlim/ylim</code> option is
+ignored since we have not specified sensibly closed polygonal rings
+where there are under or over laps.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">polargrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule.html">graticule</a></span><span class="op">(</span>lons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">meridians</span>, <span class="fl">180</span><span class="op">)</span>, lats <span class="op">=</span> <span class="va">parallels</span>,  proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html" class="external-link">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, tiles <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">centroids</span> <span class="op">&lt;-</span> <span class="fu">reproj</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reproj/man/reproj.html" class="external-link">reproj_xy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">polargrid</span><span class="op">)</span>, <span class="st">"+proj=longlat +datum=WGS84"</span>, source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html" class="external-link">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graticule_labels.html">graticule_labels</a></span><span class="op">(</span><span class="va">meridians</span>, <span class="va">parallels</span>,  proj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html" class="external-link">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#labs &lt;- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))</span></span>
+<span><span class="co">#labs &lt;- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix</span></span>
+<span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/colors.html" class="external-link">colors</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">polargrid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">polargrid</span>, col  <span class="op">=</span> <span class="va">cols</span>, bg <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">labs</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span>, <span class="op">]</span>, lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">labs</span><span class="op">$</span><span class="va">lab</span><span class="op">[</span><span class="va">labs</span><span class="op">$</span><span class="va">islon</span><span class="op">]</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"white"</span>,  cex <span class="op">=</span> <span class="fl">0.9</span>, pos <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="README-unnamed-chunk-4-1.png" width="700"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="comparison-to-tools-in-sp-and-rgdal" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparison-to-tools-in-sp-and-rgdal" class="anchor"></a>Comparison to tools in sp and rgdal</h2>
-<p>The rgdal function <code><a href="http://rgdal.r-forge.r-project.org/reference/llgrid.html">llgridlines()</a></code> will draw a graticule on a map but had a few limitations prior to May 2016 (some of this story is now out of date and has been improved).</p>
-<ul>
-<li>no control over the exact meridian and parallel lines to draw</li>
-<li>the extent of lines is not independent of their perpendicular counterparts</li>
-<li>relies on a projected object with sufficient verticular density.</li>
-</ul>
-<p>Many of these limitations can be worked around, especially by leveraging tools in the raster package but it’s not particularly elegant. Interestingly <code>mapGrid</code> in oce seems to share some of the same limitations, but I need to explore that more before being sure about the details.</p>
-<p>Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a <code>llgridlines</code> graticule. (Note that there’s a fair region around the main land mass of Australia here, due to Heard Island, Macquarie Island and Lord Howe Island driving the bounds of this map.)</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">pmap</span><span class="op">)</span>
-<span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>xpd <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-<span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/llgrid.html">llgridlines</a></span><span class="op">(</span><span class="va">pmap</span><span class="op">)</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span></code></pre></div>
-<p><img src="README-unnamed-chunk-5-1.png" width="700"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></code></pre></div>
-<p>We cannot easily modify the lines to be only in our local area, since <code>llgridlines</code> overrides our inputs with the bounding box of the overall object.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">pmap</span><span class="op">)</span>
-<span class="va">lons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">140</span>, <span class="fl">150</span>, length <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="va">lats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">35</span>, length <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/llgrid.html">llgridlines</a></span><span class="op">(</span><span class="va">pmap</span>, easts <span class="op">=</span> <span class="va">lons</span>, norths <span class="op">=</span> <span class="va">lats</span><span class="op">)</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span></code></pre></div>
-<p><img src="README-unnamed-chunk-6-1.png" width="700"></p>
-<p>What we can do is crop the object, or create a new one with the overall extents of our region of interest. This is much closer to what I want but still I need to fiddle to get it just right.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>xpd <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-<span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">lons</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">lats</span><span class="op">)</span><span class="op">)</span>, <span class="st">"SpatialPolygons"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">llproj</span>
-<span class="va">pex</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/spTransform-methods.html">spTransform</a></span><span class="op">(</span><span class="va">ex</span>, <span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/CRS-class.html">CRS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">pmap</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html">extent</a></span><span class="op">(</span><span class="va">pex</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"n"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">pmap</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/llgrid.html">llgridlines</a></span><span class="op">(</span><span class="va">pex</span>, easts <span class="op">=</span> <span class="va">lons</span>, norths <span class="op">=</span> <span class="va">lats</span><span class="op">)</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-
-<span class="co">#&gt; Warning in proj4string(obj): Discarded datum Unknown based on GRS80 ellipsoid in</span>
-<span class="co">#&gt; Proj4 definition</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4</span>
-<span class="co">#&gt; definition</span></code></pre></div>
-<p><img src="README-unnamed-chunk-7-1.png" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></code></pre></div>
-<p>How about the polar example? This is not bad, but the default number of vertices is not sufficient and we don’t get a sensible set of meridians.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">##llgridlines(ice)  does not understand a raster</span>
-<span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/llgrid.html">llgridlines</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">ice</span>, <span class="st">"SpatialPoints"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span></code></pre></div>
-<p><img src="README-unnamed-chunk-8-1.png" width="700"></p>
-<p>Try again, we increase the verticular density, but still I can’t get a line at -180/180 and 80S.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/llgrid.html">llgridlines</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">ice</span>, <span class="st">"SpatialPoints"</span><span class="op">)</span>, easts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">180</span>, <span class="op">-</span><span class="fl">120</span>, <span class="op">-</span><span class="fl">60</span>, <span class="fl">0</span>, <span class="fl">60</span>, <span class="fl">120</span><span class="op">)</span>, norths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">80</span>, <span class="op">-</span><span class="fl">70</span>, <span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">50</span><span class="op">)</span>, ndiscr <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span>
-<span class="co">#&gt; Warning in proj4string(obj): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj</span>
-<span class="co">#&gt; = prefer_proj): Discarded ellps unknown in Proj4 definition: +proj=stere</span>
-<span class="co">#&gt; +lat_0=-90 +lat_ts=-70 +lon_0=0 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m</span>
-<span class="co">#&gt; +no_defs +type=crs</span>
-<span class="co">#&gt; Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =</span>
-<span class="co">#&gt; prefer_proj): Discarded datum unknown in Proj4 definition</span></code></pre></div>
-<p><img src="README-unnamed-chunk-9-1.png" width="700"></p>
+<div class="section level3">
+<h3 id="comparison-to-tools-in-sp-and-rgdal">Comparison to tools in sp and rgdal<a class="anchor" aria-label="anchor" href="#comparison-to-tools-in-sp-and-rgdal"></a>
+</h3>
+<p><strong>This section kept for historical interest only. </strong></p>
+<p>See: <a href="https://github.com/hypertidy/graticule/issues/19#issuecomment-1379874409" class="external-link uri">https://github.com/hypertidy/graticule/issues/19#issuecomment-1379874409</a></p>
+<p>Also see here for another implementation of the Tissot Indicatrix in
+R by user <a href="https://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection" class="external-link">whuber
+on GIS StackExchange</a>. This is available in the <a href="https://github.com/mdsumner/tissot" class="external-link">dev package tissot</a>.</p>
 </div>
-<div id="comparison-with-sf" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparison-with-sf" class="anchor"></a>Comparison with sf</h2>
-<p>(This is pretty good, needs more exploration.)</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
-<span class="co">#&gt; Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1</span>
-<span class="va">sf_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="va">pmap</span><span class="op">)</span>
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_graticule.html">st_graticule</a></span><span class="op">(</span><span class="va">sf_map</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">sf_map</span><span class="op">)</span><span class="op">)</span>
-<span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>xpd <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/ncell.html">nrow</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"N"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">x_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">x_start</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_start"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_start"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, pos <span class="op">=</span> <span class="fl">2</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"E"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">y_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">y_start</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_start"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_start"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fl">90</span>, pos <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"N"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">x_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">x_end</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_end"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_end"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, pos <span class="op">=</span> <span class="fl">4</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"E"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">y_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">y_end</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_end"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_end"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fl">90</span>, pos <span class="op">=</span> <span class="fl">3</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="README-unnamed-chunk-10-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mdsumner.github.io/spex/">spex</a></span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'spex'</span>
-<span class="co">#&gt; The following object is masked _by_ '.GlobalEnv':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     ice</span>
-<span class="va">pex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mdsumner.github.io/spex/reference/spex.html">spex</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_graticule.html">st_graticule</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="va">pex</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> 
-<span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>xpd <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/ncell.html">nrow</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"N"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">x_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">x_start</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_start"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_start"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, pos <span class="op">=</span> <span class="fl">2</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"E"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">y_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">y_start</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_start"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_start"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_start</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fl">90</span>, pos <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"N"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">x_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">x_end</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_end"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_end"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, pos <span class="op">=</span> <span class="fl">4</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">type</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"E"</span> <span class="op">&amp;&amp;</span> <span class="va">g</span><span class="op">$</span><span class="va">y_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">y_end</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">1000</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"x_end"</span><span class="op">]</span>, <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"y_end"</span><span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">g</span><span class="op">[</span><span class="va">i</span>,<span class="st">"degree_label"</span><span class="op">]</span><span class="op">)</span>, 
-        srt <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">angle_end</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">-</span> <span class="fl">90</span>, pos <span class="op">=</span> <span class="fl">3</span>, cex <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="README-unnamed-chunk-11-1.png" width="700"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="comparison-with-the-graticule-in-ggplot2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparison-with-the-graticule-in-ggplot2" class="anchor"></a>Comparison with the graticule in ggplot2</h2>
-<p>TBD</p>
-</div>
-<div id="comparison-to-mapgrid-in-oce" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparison-to-mapgrid-in-oce" class="anchor"></a>Comparison to <strong>mapGrid</strong> in oce</h2>
-<p>The oce package has a lot of really neat map projection tools, but it works rather differently from the <em>Spatial</em> and <em>raster</em> tools in R. We need to drive the creation of the plot from the start with <code>mapPlot</code>, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. (My use of oce is inexpert, I’m not across much of the details yet so I may well be off-track with some things here).</p>
-<p>Here is our map of Victoria.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/oce/">oce</a></span><span class="op">)</span>
-<span class="co">## we need to hop the crevasse into another world</span>
-
-<span class="va">pp</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/geom.html">geom</a></span><span class="op">(</span><span class="va">map</span>, sepNA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://dankelley.github.io/oce/reference/mapPlot.html">mapPlot</a></span><span class="op">(</span><span class="va">pp</span><span class="op">[</span>,<span class="st">"x"</span><span class="op">]</span>, <span class="va">pp</span><span class="op">[</span>,<span class="st">"y"</span><span class="op">]</span>, projection <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">pmap</span><span class="op">)</span>, longitudelim <span class="op">=</span> <span class="va">xl</span>, latitudelim <span class="op">=</span> <span class="va">yl</span>, type <span class="op">=</span> <span class="st">"p"</span>, grid <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://dankelley.github.io/oce/reference/mapGrid.html">mapGrid</a></span><span class="op">(</span>longitude <span class="op">=</span> <span class="va">lons</span>, latitude <span class="op">=</span> <span class="va">lats</span><span class="op">)</span>
-<span class="co">## and to prove that all is well in the world</span>
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">pmap</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>
-<span class="fu"><a href="https://dankelley.github.io/oce/reference/mapGrid.html">mapGrid</a></span><span class="op">(</span>longitude <span class="op">=</span> <span class="va">lons</span>, latitude <span class="op">=</span> <span class="va">lats</span><span class="op">)</span></code></pre></div>
-<p><img src="README-unnamed-chunk-12-1.png" width="700"></p>
-<p>Here is our polar map, this is good I haven’t explore oce enough yet to do it justice. For bonus points we add <code><a href="https://dankelley.github.io/oce/reference/mapTissot.html">mapTissot()</a></code>, which should be in the basic toolkit of all intrepid R mappers.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ipts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/xyFromCell.html">coordinates</a></span><span class="op">(</span><span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/spTransform-methods.html">spTransform</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/xyFromCell.html">xyFromCell</a></span><span class="op">(</span><span class="va">ice</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/ncell.html">ncell</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, <span class="fl">1000</span><span class="op">)</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="http://rgdal.r-forge.r-project.org/reference/CRS-class.html">CRS</a></span><span class="op">(</span><span class="va">llproj</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://dankelley.github.io/oce/reference/mapPlot.html">mapPlot</a></span><span class="op">(</span><span class="va">ipts</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">ipts</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, projection <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/projection.html">projection</a></span><span class="op">(</span><span class="va">ice</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"n"</span>, grid <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ice</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://dankelley.github.io/oce/reference/mapGrid.html">mapGrid</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">15</span><span class="op">)</span>
-<span class="fu"><a href="https://dankelley.github.io/oce/reference/mapTissot.html">mapTissot</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p><img src="README-unnamed-chunk-13-1.png" width="700"></p>
-<p>Also see here for another implementation of the Tissot Indicatrix in R by user <a href="https://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection">whuber on GIS StackExchange</a>. This is available in the <a href="https://github.com/mdsumner/tissot">dev package tissot</a>.</p>
-</div>
-<div id="notes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#notes" class="anchor"></a>Notes</h2>
-<p>Efforts could be shared with the sp and rgdal projects to improve the functionality for the <code>llgridlines</code> and its worker functions <code>gridlines</code> and <code>gridat</code> in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on dplyr, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in sp, raster, maptools, fields, oce and many others. It is time for a new review, analogous to the effort that built sp in ca. 2002.</p>
-<div id="terminology" class="section level3">
-<h3 class="hasAnchor">
-<a href="#terminology" class="anchor"></a>Terminology</h3>
-<p>I tend to use the same terminology as used within <a href="http://www.manifold.net/">Manifold System</a> <em>because it’s so awesome</em> and that’s where I first learnt about most of these concepts. In my experience not many people use the term <em>graticule</em> in this way, so take it from the master himself on page 8 (Snyder, 1987):</p>
+<div class="section level3">
+<h3 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
+</h3>
+<p>Efforts could be shared with the sp and rgdal projects to improve the
+functionality for the <code>llgridlines</code> and its worker functions
+<code>gridlines</code> and <code>gridat</code> in that central place,
+and I agree with this. But I have an interest in working with graticules
+more directly as objects, and potentially stored in relational-table
+approach built on dplyr, and so I just found it simpler to start from
+scratch in this package. Also, there is a lot of this functionality
+spread around the place in sp, raster, maptools, fields, oce and many
+others. It is time for a new review, analogous to the effort that built
+sp in ca. 2002.</p>
+<div class="section level4">
+<h4 id="terminology">Terminology<a class="anchor" aria-label="anchor" href="#terminology"></a>
+</h4>
+<p>I tend to use the same terminology as used within <a href="http://www.manifold.net/" class="external-link">Manifold System</a> <em>because it’s so
+awesome</em> and that’s where I first learnt about most of these
+concepts. In my experience not many people use the term
+<em>graticule</em> in this way, so take it from the master himself on
+page 8 (Snyder, 1987):</p>
 <blockquote>
-<p>To identify the location of points on the Earth, a graticule or network of longitude and latitude lines has been superimposed on the surface. They are commonly referred to as meridians and parallels, respectively.</p>
+<p>To identify the location of points on the Earth, a graticule or
+network of longitude and latitude lines has been superimposed on the
+surface. They are commonly referred to as meridians and parallels,
+respectively.</p>
 </blockquote>
-<p>“Verticular density” is kind of a joke, but I like it. YMMV</p>
 </div>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
-<p><a href="https://pubs.er.usgs.gov/publication/pp1395">Snyder, John Parr. Map projections–A working manual. No. 1395. USGPO, 1987.</a></p>
+<div class="section level3">
+<h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h3>
+<p><a href="https://pubs.er.usgs.gov/publication/pp1395" class="external-link">Snyder, John
+Parr. Map projections–A working manual. No. 1395. USGPO, 1987.</a></p>
 </div>
-<div id="environment" class="section level2">
-<h2 class="hasAnchor">
-<a href="#environment" class="anchor"></a>Environment</h2>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sessioninfo/man/session_info.html">session_info</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt;  setting  value                       </span>
-<span class="co">#&gt;  version  R version 4.1.1 (2021-08-10)</span>
-<span class="co">#&gt;  os       Ubuntu 20.04.2 LTS          </span>
-<span class="co">#&gt;  system   x86_64, linux-gnu           </span>
-<span class="co">#&gt;  ui       X11                         </span>
-<span class="co">#&gt;  language (EN)                        </span>
-<span class="co">#&gt;  collate  C.UTF-8                     </span>
-<span class="co">#&gt;  ctype    C.UTF-8                     </span>
-<span class="co">#&gt;  tz       UTC                         </span>
-<span class="co">#&gt;  date     2021-08-28                  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt;  package     * version    date       lib source             </span>
-<span class="co">#&gt;  abind         1.4-5      2016-07-21 [1] standard (@1.4-5)  </span>
-<span class="co">#&gt;  cachem        1.0.6      2021-08-19 [1] standard (@1.0.6)  </span>
-<span class="co">#&gt;  callr         3.7.0      2021-04-20 [1] standard (@3.7.0)  </span>
-<span class="co">#&gt;  class         7.3-19     2021-05-03 [2] CRAN (R 4.1.1)     </span>
-<span class="co">#&gt;  classInt      0.4-3      2020-04-07 [1] standard (@0.4-3)  </span>
-<span class="co">#&gt;  cli           3.0.1      2021-07-17 [1] standard (@3.0.1)  </span>
-<span class="co">#&gt;  codetools     0.2-18     2020-11-04 [2] CRAN (R 4.1.1)     </span>
-<span class="co">#&gt;  colorspace    2.0-2      2021-06-24 [1] standard (@2.0-2)  </span>
-<span class="co">#&gt;  crayon        1.4.1      2021-02-08 [1] standard (@1.4.1)  </span>
-<span class="co">#&gt;  crsmeta       0.3.0      2020-03-29 [1] standard (@0.3.0)  </span>
-<span class="co">#&gt;  DBI           1.1.1      2021-01-15 [1] standard (@1.1.1)  </span>
-<span class="co">#&gt;  desc          1.3.0      2021-03-05 [1] standard (@1.3.0)  </span>
-<span class="co">#&gt;  devtools      2.4.2      2021-06-07 [1] standard (@2.4.2)  </span>
-<span class="co">#&gt;  digest        0.6.27     2020-10-24 [1] standard (@0.6.27) </span>
-<span class="co">#&gt;  dotCall64     1.0-1      2021-02-11 [1] standard (@1.0-1)  </span>
-<span class="co">#&gt;  e1071         1.7-8      2021-07-28 [1] standard (@1.7-8)  </span>
-<span class="co">#&gt;  ellipsis      0.3.2      2021-04-29 [1] standard (@0.3.2)  </span>
-<span class="co">#&gt;  evaluate      0.14       2019-05-28 [1] standard (@0.14)   </span>
-<span class="co">#&gt;  fansi         0.5.0      2021-05-25 [1] standard (@0.5.0)  </span>
-<span class="co">#&gt;  fastmap       1.1.0      2021-01-25 [1] standard (@1.1.0)  </span>
-<span class="co">#&gt;  fields        12.5       2021-06-25 [1] standard (@12.5)   </span>
-<span class="co">#&gt;  foreign       0.8-81     2020-12-22 [2] CRAN (R 4.1.1)     </span>
-<span class="co">#&gt;  fs            1.5.0      2020-07-31 [1] standard (@1.5.0)  </span>
-<span class="co">#&gt;  geometry      0.4.5      2019-12-04 [1] standard (@0.4.5)  </span>
-<span class="co">#&gt;  geosphere     1.5-10     2019-05-26 [1] standard (@1.5-10) </span>
-<span class="co">#&gt;  ggplot2       3.3.5      2021-06-25 [1] standard (@3.3.5)  </span>
-<span class="co">#&gt;  glue          1.4.2      2020-08-27 [1] standard (@1.4.2)  </span>
-<span class="co">#&gt;  graticule   * 0.1.6.9002 2021-08-28 [1] local              </span>
-<span class="co">#&gt;  gridExtra     2.3        2017-09-09 [1] standard (@2.3)    </span>
-<span class="co">#&gt;  gsw         * 1.0-6      2021-07-07 [1] standard (@1.0-6)  </span>
-<span class="co">#&gt;  gtable        0.3.0      2019-03-25 [1] standard (@0.3.0)  </span>
-<span class="co">#&gt;  highr         0.9        2021-04-16 [1] standard (@0.9)    </span>
-<span class="co">#&gt;  htmltools     0.5.2      2021-08-25 [1] standard (@0.5.2)  </span>
-<span class="co">#&gt;  KernSmooth    2.23-20    2021-05-03 [2] CRAN (R 4.1.1)     </span>
-<span class="co">#&gt;  knitr         1.33       2021-04-24 [1] standard (@1.33)   </span>
-<span class="co">#&gt;  lattice       0.20-44    2021-05-02 [2] CRAN (R 4.1.1)     </span>
-<span class="co">#&gt;  lifecycle     1.0.0      2021-02-15 [1] standard (@1.0.0)  </span>
-<span class="co">#&gt;  magic         1.5-9      2018-09-17 [1] standard (@1.5-9)  </span>
-<span class="co">#&gt;  magrittr      2.0.1      2020-11-17 [1] standard (@2.0.1)  </span>
-<span class="co">#&gt;  maps          3.3.0      2018-04-03 [1] standard (@3.3.0)  </span>
-<span class="co">#&gt;  maptools      1.1-1      2021-03-15 [1] standard (@1.1-1)  </span>
-<span class="co">#&gt;  memoise       2.0.0      2021-01-26 [1] standard (@2.0.0)  </span>
-<span class="co">#&gt;  munsell       0.5.0      2018-06-12 [1] standard (@0.5.0)  </span>
-<span class="co">#&gt;  oce         * 1.4-0      2021-03-28 [1] standard (@1.4-0)  </span>
-<span class="co">#&gt;  pillar        1.6.2      2021-07-29 [1] standard (@1.6.2)  </span>
-<span class="co">#&gt;  pkgbuild      1.2.0      2020-12-15 [1] standard (@1.2.0)  </span>
-<span class="co">#&gt;  pkgconfig     2.0.3      2019-09-22 [1] standard (@2.0.3)  </span>
-<span class="co">#&gt;  pkgdown       1.6.1      2020-09-12 [1] standard (@1.6.1)  </span>
-<span class="co">#&gt;  pkgload       1.2.1      2021-04-06 [1] standard (@1.2.1)  </span>
-<span class="co">#&gt;  png           0.1-7      2013-12-03 [1] standard (@0.1-7)  </span>
-<span class="co">#&gt;  prettyunits   1.1.1      2020-01-24 [1] standard (@1.1.1)  </span>
-<span class="co">#&gt;  processx      3.5.2      2021-04-30 [1] standard (@3.5.2)  </span>
-<span class="co">#&gt;  proj4         1.0-10.1   2021-01-26 [1] standard (@1.0-10.)</span>
-<span class="co">#&gt;  proxy         0.4-26     2021-06-07 [1] standard (@0.4-26) </span>
-<span class="co">#&gt;  ps            1.6.0      2021-02-28 [1] standard (@1.6.0)  </span>
-<span class="co">#&gt;  purrr         0.3.4      2020-04-17 [1] standard (@0.3.4)  </span>
-<span class="co">#&gt;  quadmesh      0.5.0      2021-01-11 [1] standard (@0.5.0)  </span>
-<span class="co">#&gt;  R6            2.5.1      2021-08-19 [1] standard (@2.5.1)  </span>
-<span class="co">#&gt;  ragg          1.1.3      2021-06-09 [1] standard (@1.1.3)  </span>
-<span class="co">#&gt;  raster      * 3.4-13     2021-06-18 [1] standard (@3.4-13) </span>
-<span class="co">#&gt;  Rcpp          1.0.7      2021-07-07 [1] standard (@1.0.7)  </span>
-<span class="co">#&gt;  remotes       2.4.0      2021-06-02 [1] standard (@2.4.0)  </span>
-<span class="co">#&gt;  reproj        0.4.2      2020-04-15 [1] standard (@0.4.2)  </span>
-<span class="co">#&gt;  rgdal       * 1.5-23     2021-02-03 [1] standard (@1.5-23) </span>
-<span class="co">#&gt;  rlang         0.4.11     2021-04-30 [1] standard (@0.4.11) </span>
-<span class="co">#&gt;  rmarkdown     2.10       2021-08-06 [1] standard (@2.10)   </span>
-<span class="co">#&gt;  rprojroot     2.0.2      2020-11-15 [1] standard (@2.0.2)  </span>
-<span class="co">#&gt;  rworldmap   * 1.3-6      2016-02-03 [1] standard (@1.3-6)  </span>
-<span class="co">#&gt;  scales        1.1.1      2020-05-11 [1] standard (@1.1.1)  </span>
-<span class="co">#&gt;  sessioninfo   1.1.1      2018-11-05 [1] standard (@1.1.1)  </span>
-<span class="co">#&gt;  sf          * 1.0-2      2021-07-26 [1] standard (@1.0-2)  </span>
-<span class="co">#&gt;  sp          * 1.4-5      2021-01-10 [1] standard (@1.4-5)  </span>
-<span class="co">#&gt;  spam          2.7-0      2021-06-25 [1] standard (@2.7-0)  </span>
-<span class="co">#&gt;  spex        * 0.7.1      2020-06-20 [1] standard (@0.7.1)  </span>
-<span class="co">#&gt;  stringi       1.7.4      2021-08-25 [1] standard (@1.7.4)  </span>
-<span class="co">#&gt;  stringr       1.4.0      2019-02-10 [1] standard (@1.4.0)  </span>
-<span class="co">#&gt;  systemfonts   1.0.2      2021-05-11 [1] standard (@1.0.2)  </span>
-<span class="co">#&gt;  testthat    * 3.0.4      2021-07-01 [1] standard (@3.0.4)  </span>
-<span class="co">#&gt;  textshaping   0.3.5      2021-06-09 [1] standard (@0.3.5)  </span>
-<span class="co">#&gt;  tibble        3.1.4      2021-08-25 [1] standard (@3.1.4)  </span>
-<span class="co">#&gt;  units         0.7-2      2021-06-08 [1] standard (@0.7-2)  </span>
-<span class="co">#&gt;  usethis       2.0.1      2021-02-10 [1] standard (@2.0.1)  </span>
-<span class="co">#&gt;  utf8          1.2.2      2021-07-24 [1] standard (@1.2.2)  </span>
-<span class="co">#&gt;  vctrs         0.3.8      2021-04-29 [1] standard (@0.3.8)  </span>
-<span class="co">#&gt;  viridis       0.6.1      2021-05-11 [1] standard (@0.6.1)  </span>
-<span class="co">#&gt;  viridisLite   0.4.0      2021-04-13 [1] standard (@0.4.0)  </span>
-<span class="co">#&gt;  withr         2.4.2      2021-04-18 [1] standard (@2.4.2)  </span>
-<span class="co">#&gt;  xfun          0.25       2021-08-06 [1] standard (@0.25)   </span>
-<span class="co">#&gt;  yaml          2.2.1      2020-02-01 [1] standard (@2.2.1)  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; [1] /home/runner/work/_temp/Library</span>
-<span class="co">#&gt; [2] /opt/R/4.1.1/lib/R/library</span></code></pre></div>
+<div class="section level3">
+<h3 id="environment">Environment<a class="anchor" aria-label="anchor" href="#environment"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt;  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
+<span><span class="co">#&gt;  version  R version 4.2.2 (2022-10-31)</span></span>
+<span><span class="co">#&gt;  os       Ubuntu 22.04.1 LTS</span></span>
+<span><span class="co">#&gt;  system   x86_64, linux-gnu</span></span>
+<span><span class="co">#&gt;  ui       X11</span></span>
+<span><span class="co">#&gt;  language en</span></span>
+<span><span class="co">#&gt;  collate  C.UTF-8</span></span>
+<span><span class="co">#&gt;  ctype    C.UTF-8</span></span>
+<span><span class="co">#&gt;  tz       UTC</span></span>
+<span><span class="co">#&gt;  date     2023-01-12</span></span>
+<span><span class="co">#&gt;  pandoc   2.19.2 @ /usr/bin/ (via rmarkdown)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB; font-weight: bold;">─ Packages ───────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt;  <span style="color: #555555; font-style: italic;">package    </span> <span style="color: #555555; font-style: italic;">*</span> <span style="color: #555555; font-style: italic;">version</span> <span style="color: #555555; font-style: italic;">date (UTC)</span> <span style="color: #555555; font-style: italic;">lib</span> <span style="color: #555555; font-style: italic;">source</span></span></span>
+<span><span class="co">#&gt;  bslib         0.4.2   <span style="color: #555555;">2022-12-16</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  cachem        1.0.6   <span style="color: #555555;">2021-08-19</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  callr         3.7.3   <span style="color: #555555;">2022-11-02</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  cli           3.6.0   <span style="color: #555555;">2023-01-09</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  codetools     0.2-18  <span style="color: #555555;">2020-11-04</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.2.2)</span></span></span>
+<span><span class="co">#&gt;  crayon        1.5.2   <span style="color: #555555;">2022-09-29</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  desc          1.4.2   <span style="color: #555555;">2022-09-08</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  devtools      2.4.5   <span style="color: #555555;">2022-10-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  digest        0.6.31  <span style="color: #555555;">2022-12-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  ellipsis      0.3.2   <span style="color: #555555;">2021-04-29</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  evaluate      0.19    <span style="color: #555555;">2022-12-13</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  fastmap       1.1.0   <span style="color: #555555;">2021-01-25</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  fs            1.5.2   <span style="color: #555555;">2021-12-08</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  geosphere     1.5-18  <span style="color: #555555;">2022-11-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  glue          1.6.2   <span style="color: #555555;">2022-02-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  graticule   * 0.2.0   <span style="color: #555555;">2023-01-12</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">local</span></span></span>
+<span><span class="co">#&gt;  highr         0.10    <span style="color: #555555;">2022-12-22</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  htmltools     0.5.4   <span style="color: #555555;">2022-12-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  htmlwidgets   1.6.1   <span style="color: #555555;">2023-01-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  httpuv        1.6.7   <span style="color: #555555;">2022-12-14</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  jquerylib     0.1.4   <span style="color: #555555;">2021-04-26</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  jsonlite      1.8.4   <span style="color: #555555;">2022-12-06</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  knitr         1.41    <span style="color: #555555;">2022-11-18</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  later         1.3.0   <span style="color: #555555;">2021-08-18</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  lattice       0.20-45 <span style="color: #555555;">2021-09-22</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.2.2)</span></span></span>
+<span><span class="co">#&gt;  lifecycle     1.0.3   <span style="color: #555555;">2022-10-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  magrittr      2.0.3   <span style="color: #555555;">2022-03-30</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  memoise       2.0.1   <span style="color: #555555;">2021-11-26</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  mime          0.12    <span style="color: #555555;">2021-09-28</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  miniUI        0.1.1.1 <span style="color: #555555;">2018-05-18</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  pkgbuild      1.4.0   <span style="color: #555555;">2022-11-27</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  pkgdown       2.0.7   <span style="color: #555555;">2022-12-14</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  pkgload       1.3.2   <span style="color: #555555;">2022-11-16</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  prettyunits   1.1.1   <span style="color: #555555;">2020-01-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  processx      3.8.0   <span style="color: #555555;">2022-10-26</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  profvis       0.3.7   <span style="color: #555555;">2020-11-02</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  PROJ          0.4.0   <span style="color: #555555;">2020-10-19</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  proj4         1.0-12  <span style="color: #555555;">2022-11-30</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  promises      1.2.0.1 <span style="color: #555555;">2021-02-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  ps            1.7.2   <span style="color: #555555;">2022-10-26</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  purrr         1.0.1   <span style="color: #555555;">2023-01-10</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  R6            2.5.1   <span style="color: #555555;">2021-08-19</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  ragg          1.2.4   <span style="color: #555555;">2022-10-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  raster      * 3.6-13  <span style="color: #555555;">2023-01-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  Rcpp          1.0.9   <span style="color: #555555;">2022-07-08</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  remotes       2.4.2   <span style="color: #555555;">2021-11-30</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  reproj        0.4.3   <span style="color: #555555;">2022-10-28</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  rlang         1.0.6   <span style="color: #555555;">2022-09-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  rmarkdown     2.19    <span style="color: #555555;">2022-12-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  rprojroot     2.0.3   <span style="color: #555555;">2022-04-02</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  sass          0.4.4   <span style="color: #555555;">2022-11-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  sessioninfo   1.2.2   <span style="color: #555555;">2021-12-06</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  shiny         1.7.4   <span style="color: #555555;">2022-12-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  sp          * 1.5-1   <span style="color: #555555;">2022-11-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  stringi       1.7.12  <span style="color: #555555;">2023-01-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  stringr       1.5.0   <span style="color: #555555;">2022-12-02</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  systemfonts   1.0.4   <span style="color: #555555;">2022-02-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  terra         1.6-47  <span style="color: #555555;">2022-12-02</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  textshaping   0.3.6   <span style="color: #555555;">2021-10-13</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  urlchecker    1.0.1   <span style="color: #555555;">2021-11-30</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  usethis       2.1.6   <span style="color: #555555;">2022-05-25</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  vctrs         0.5.1   <span style="color: #555555;">2022-11-16</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  xfun          0.36    <span style="color: #555555;">2022-12-21</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  xtable        1.8-4   <span style="color: #555555;">2019-04-21</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  yaml          2.3.6   <span style="color: #555555;">2022-10-18</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #555555;"> [1] /home/runner/work/_temp/Library</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;"> [2] /opt/R/4.2.2/lib/R/site-library</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;"> [3] /opt/R/4.2.2/lib/R/library</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB; font-weight: bold;">──────────────────────────────────────────────────────────────────────────────</span></span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -576,11 +342,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Michael D. Sumner.</p>
+  <p></p>
+<p>Developed by Michael D. Sumner.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -588,6 +356,8 @@
 
   
 
+
+  
 
   </body>
 </html>
