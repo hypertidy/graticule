@@ -130,7 +130,7 @@ See: https://github.com/hypertidy/graticule/issues/19#issuecomment-1379874409
 
 
 
-Also see here for another implementation of the Tissot Indicatrix in R by user [whuber on GIS StackExchange](https://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection). This is available in the [dev package tissot](https://github.com/mdsumner/tissot). 
+Also see here for another implementation of the Tissot Indicatrix in R by user [whuber on GIS StackExchange](https://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection). This is available in the [dev package tissot](https://github.com/hypertidy/tissot). 
 
 
 ## Notes
@@ -139,7 +139,7 @@ Efforts could be shared with the sp and rgdal projects to improve the functional
 
 ### Terminology
 
-I tend to use the same terminology as used within [Manifold System](http://www.manifold.net/) *because it's so awesome* and that's where I first learnt about most of these concepts. In my experience not many people use the term *graticule* in this way, so take it from the master himself on page 8 (Snyder, 1987): 
+I tend to use the same terminology as used within [Manifold System](https://manifold.net/) *because it's so awesome* and that's where I first learnt about most of these concepts. In my experience not many people use the term *graticule* in this way, so take it from the master himself on page 8 (Snyder, 1987): 
 
 > To identify the location of points on the Earth, a graticule or network of longitude
 > and latitude lines has been superimposed on the surface. They are commonly
