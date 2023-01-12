@@ -1,5 +1,12 @@
 # graticule dev
 
+* Removed function `pathologicule()`, no one will miss it. Might reappear as {gridicule} when we have
+better PROJ support. 
+
+* Removed unused methods package from Imports. 
+
+* Removed rgdal, maptools, rworldmap, oce from Suggests. 
+
 * New function `lonlat()` for quick and dirty plots and to generate fields of longitude and  
  latitude. 
 

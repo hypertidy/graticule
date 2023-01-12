@@ -41,10 +41,9 @@ lonlat <- function(x, na.rm = FALSE, lon = FALSE, lat = FALSE, ..., plot = TRUE,
       lons[cell] <- raster::xFromCell(x, cell)
       lats[cell] <- raster::yFromCell(x, cell)
     } else {
-      if (!requireNamespace("rgdal")) stop("rgdal required for lonlat()")
       xy <- raster::xyFromCell(x, cell)
 
-    suppressWarnings(      xy <- rgdal::project(xy, raster::projection(x), inv = TRUE))
+    suppressWarnings(      xy <- reproj::reproj_xy(xy, lonlatp4(), source = raster::projection(x)))
       lons[cell] <- xy[,1]
       lats[cell] <- xy[,2]
     }

@@ -41,16 +41,21 @@ graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, 
 
   ll <- vector("list", length(cells))
   ## loop extents of every pixel (I know, I know)
+  p4 <- lonlatp4()
   for (i in seq_along(ll)) {
     ex <- raster::extentFromCells(grid, cells[i])
-    ll[[i]] <- ll_extent(c(ex@xmin, ex@xmax), c(ex@ymin, ex@ymax))
+    m1 <- ll_extent(c(ex@xmin, ex@xmax), c(ex@ymin, ex@ymax))
+    if (!is.null(proj)) {
+      m1 <- reproj::reproj_xy(m1, proj, source = lonlatp4())
+      p4 <- proj
+    }
+    ll[[i]] <- m1
   }
   xx <- do.call(raster::spPolygons, ll)
 
   xx <- sp::SpatialPolygonsDataFrame(xx, data.frame(x = 1:length(xx)))
-  raster::projection(xx) <-   "+proj=longlat +datum=WGS84"
-  #plot(spTransform(xx, "+proj=laea"))
-  if (!is.null(proj))  sp::spTransform(xx, proj) else xx
+  raster::projection(xx) <-   p4
+  xx
 }
 
 

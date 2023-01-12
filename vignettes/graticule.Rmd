@@ -24,7 +24,6 @@ knitr::opts_chunk$set(
   fig.path = "README-"
 )
 
-library(rgdal)
 
 ```
 
@@ -43,21 +42,21 @@ This is an area that needs much more discussion and outlining of needs and exper
 
 # Examples
 
+ALL EXAMPLES REMOVED, FIXME. 
+
 A simple example uses data from rworldmap to build a map around the state of Victoria in Australia. Victoria uses a local Lambert Conformal Conic projection that was introduced while the shift to GDA94 was implemented, to reduce complications due to working with more than one UTM zone for the state.     
 
-```{r,message=FALSE}
-library(rgdal)
+```{r,message=FALSE, eval=FALSE}
 library(raster)
-library(rworldmap)
-data(countriesLow)
+
 llproj <- projection(countriesLow)
 library(graticule)
-map<- subset(countriesLow, SOVEREIGNT == "Australia")
+#map<- subset(countriesLow, SOVEREIGNT == "Australia")
 
 ## VicGrid
 prj <- "+proj=lcc +lat_1=-36 +lat_2=-38 +lat_0=-37 +lon_0=145 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 
-pmap <- spTransform(map, CRS(prj))
+#pmap <- spTransform(map, CRS(prj))
 
 ## specify exactly where we want meridians and parallels
 lons <- seq(140, 150, length = 5)
@@ -75,7 +74,7 @@ labs <- graticule_labels(lons, lats, xline = min(xl), yline = max(yl), proj = pr
 ## set up a map extent and plot
 op <- par(mar = rep(0, 4))
 plot(extent(grat) + c(4, 2) * 1e5, asp = 1, type = "n", axes = FALSE, xlab = "", ylab = "")
-plot(pmap, add = TRUE)
+#plot(pmap, add = TRUE)
 ## the lines are a SpatialLinesDataFrame
 plot(grat, add = TRUE, lty = 5, col = rgb(0, 0, 0, 0.8))
 ## the labels are a SpatialPointsDataFrame, and islon tells us which kind
@@ -93,7 +92,7 @@ Download some sea ice concentration data and plot with a graticule. These passiv
 ```{r,message=FALSE}
 library(raster)
 library(graticule)
-library(rgdal)
+
 tfile <- system.file("extdata",  "nt_20140320_f17_v01_s.bin", package = "graticule")
 ice <- raster(tfile)
 
@@ -116,7 +115,7 @@ Continuing from the sea ice example, build the graticule grid as actual polygons
 
 ```{r}
 polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = projection(ice), tiles = TRUE)
-centroids <- project(coordinates(polargrid), projection(ice), inv = TRUE)
+centroids <- reproj::reproj_xy(coordinates(polargrid), "+proj=longlat +datum=WGS84", source = projection(ice))
 labs <- graticule_labels(meridians, parallels,  proj = projection(ice))
 #labs <- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))
 #labs <- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix
@@ -129,150 +128,11 @@ par(op)
 ```
 ## Comparison to tools in sp and rgdal
 
-The rgdal function `llgridlines()` will draw a graticule on a map but had a few limitations prior to May 2016 (some of this story is now out of date and has been improved).  
+**This section kept for historical interest only. **
 
-* no control over the exact meridian and parallel lines to draw
-* the extent of lines is not independent of their perpendicular counterparts
-* relies on a projected object with sufficient verticular density. 
+See: https://github.com/mdsumner/graticule/issues/19#issuecomment-1379874409
 
-Many of these limitations can be worked around, especially by leveraging tools in the raster package but it's not particularly elegant. Interestingly `mapGrid` in oce seems to share some of the same limitations, but I need to explore that more before being sure about the details. 
 
-Above we defined longitude and latitude ranges for an area of interest in Australia. We can plot the projected map and put on a `llgridlines` graticule. (Note that there's a fair region around the main land mass of Australia here, due to Heard Island, Macquarie Island and Lord Howe Island driving the bounds of this map.)
-
-```{r}
-plot(pmap)
-op <- par(xpd = NA)
-llgridlines(pmap)
-par(op)
-```
-
-We cannot easily modify the lines to be only in our local area, since `llgridlines` overrides our inputs with the bounding box of the overall object. 
-
-```{r}
-plot(pmap)
-lons <- seq(140, 150, length = 5)
-lats <- seq(-40, -35, length = 6)
-llgridlines(pmap, easts = lons, norths = lats)
-```
-
-What we can do is crop the object, or create a new one with the overall extents of our region of interest.  This is much closer to what I want but still I need to fiddle to get it just right. 
-
-```{r}
-op <- par(xpd = NA)
-ex <- as(extent(range(lons), range(lats)), "SpatialPolygons")
-projection(ex) <- llproj
-pex <- spTransform(ex, CRS(projection(pmap)))
-plot(extent(pex), type = "n", axes = FALSE, xlab = "", ylab = "", asp = 1)
-plot(pmap, add = TRUE)
-llgridlines(pex, easts = lons, norths = lats)
-par(op)
-
-```
-
-How about the polar example?  This is not bad, but the default number of vertices is not sufficient and we don't get a sensible set of meridians. 
-
-```{r}
-plot(ice, axes = FALSE)
-##llgridlines(ice)  does not understand a raster
-llgridlines(as(ice, "SpatialPoints"))
-```
-
-Try again, we increase the verticular density, but still I can't  get a line at -180/180 and 80S.  
-
-```{r}
-plot(ice, axes = FALSE)
-llgridlines(as(ice, "SpatialPoints"), easts = c(-180, -120, -60, 0, 60, 120), norths = c(-80, -70, -60, -50), ndiscr = 50)
-```
-
-## Comparison with sf
-
-(This is pretty good, needs more exploration.)
-
-```{r}
-library(sf)
-sf_map <- st_as_sf(pmap)
-g <- st_graticule(sf_map)
-plot(st_geometry(sf_map))
-op <- par(xpd = NA)
-plot(st_geometry(g), add = TRUE)
-invisible(lapply(seq_len(nrow(g)), function(i) {
-if (g$type[i] == "N" && g$x_start[i] - min(g$x_start) < 1000)
-	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_start[i], pos = 2, cex = .7)
-if (g$type[i] == "E" && g$y_start[i] - min(g$y_start) < 1000)
-	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_start[i] - 90, pos = 1, cex = .7)
-if (g$type[i] == "N" && g$x_end[i] - max(g$x_end) > -1000)
-	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_end[i], pos = 4, cex = .7)
-if (g$type[i] == "E" && g$y_end[i] - max(g$y_end) > -1000)
-	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_end[i] - 90, pos = 3, cex = .7)
-}))
-
-par(op)
-```
-
-```{r}
-
-library(spex)
-pex <- spex(ice)
-plot(ice, axes = FALSE)
-g <- st_graticule(st_as_sf(pex))
-plot(st_geometry(g), add = TRUE) 
-op <- par(xpd = NA)
-invisible(lapply(seq_len(nrow(g)), function(i) {
-if (g$type[i] == "N" && g$x_start[i] - min(g$x_start) < 1000)
-	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_start[i], pos = 2, cex = .7)
-if (g$type[i] == "E" && g$y_start[i] - min(g$y_start) < 1000)
-	text(g[i,"x_start"], g[i,"y_start"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_start[i] - 90, pos = 1, cex = .7)
-if (g$type[i] == "N" && g$x_end[i] - max(g$x_end) > -1000)
-	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_end[i], pos = 4, cex = .7)
-if (g$type[i] == "E" && g$y_end[i] - max(g$y_end) > -1000)
-	text(g[i,"x_end"], g[i,"y_end"], labels = parse(text = g[i,"degree_label"]), 
-		srt = g$angle_end[i] - 90, pos = 3, cex = .7)
-}))
-par(op)
-```
-## Comparison with the graticule in ggplot2
-
-TBD
-
-## Comparison to **mapGrid** in oce
-
-The oce package has a lot of really neat map projection tools, but it works rather differently from the *Spatial* and *raster* tools in R. We need to drive the creation of the plot from the start with `mapPlot`, as it sets up the projection metadata for the current plot and handles that for subsequent plotting additions. (My use of oce is inexpert, I'm not across much of the details yet so I may well be off-track with some things here). 
-
-Here is our map of Victoria. 
-
-```{r,message=FALSE}
-library(oce)
-## we need to hop the crevasse into another world
-
-pp <- raster::geom(map, sepNA = TRUE)
-mapPlot(pp[,"x"], pp[,"y"], projection = projection(pmap), longitudelim = xl, latitudelim = yl, type = "p", grid = FALSE)
-mapGrid(longitude = lons, latitude = lats)
-## and to prove that all is well in the world
-plot(pmap, add = TRUE, col = "grey")
-mapGrid(longitude = lons, latitude = lats)
-
-```
-
-Here is our polar map, this is good I haven't explore oce enough yet to do it justice. 
-For bonus points we add `mapTissot()`, which should be in the basic toolkit of all intrepid R
-mappers. 
-
-```{r,message = FALSE}
-ipts <- coordinates(spTransform(xyFromCell(ice, sample(ncell(ice), 1000), spatial = TRUE), CRS(llproj)))
-mapPlot(ipts[,1], ipts[,2], projection = projection(ice), type = "n", grid = FALSE)
-
-plot(ice, add = TRUE)
-mapGrid(10, 15)
-mapTissot()
-
-```
 
 Also see here for another implementation of the Tissot Indicatrix in R by user [whuber on GIS StackExchange](https://gis.stackexchange.com/questions/31651/an-example-tissot-ellipse-for-an-equirectangular-projection). This is available in the [dev package tissot](https://github.com/mdsumner/tissot). 
 
@@ -289,7 +149,6 @@ I tend to use the same terminology as used within [Manifold System](http://www.m
 > and latitude lines has been superimposed on the surface. They are commonly
 > referred to as meridians and parallels, respectively. 
 
-"Verticular density" is kind of a joke, but I like it. YMMV
 
 ## References
 

@@ -35,37 +35,5 @@ defaults to `5e4`.
 The arguments \code{xlim}, \code{ylim} and \code{nverts} are ignored if \code{tiles} is \code{TRUE}.
 }
 \examples{
-\donttest{\dontrun{
-library(rgdal)
-x <- as.matrix(expand.grid(x = seq(100, 240, by = 15), y = seq(-85, -30, by = 15)))
-prj <- "+proj=laea +lon_0=180 +lat_0=-70 +ellps=WGS84"
-px <- project(x, prj)
-g <- graticule(unique(x[,1]), unique(x[,2]))
-pg <- spTransform(g, CRS(prj))
-plot(px, type = "n")
-plot(pg, add = TRUE)
-
-g2 <- graticule(unique(x[,1]), unique(x[,2]), ylim = c(-90, 0), xlim = c(110, 250))
-pg2 <- spTransform(g2, CRS(prj))
-plot(px, type = "n")
-plot(pg2, add = TRUE)
-
-prj <- "+proj=laea +lon_0=0 +lat_0=-90 +ellps=WGS84"
-xx <- c(-120, -100, -80, -60, -40); yy <- c(-65, -55, -45)
-g3 <- graticule(xx, yy, ylim = c(-70, -30), proj = prj)
-g3labs <- graticule_labels(xx, c(-65, -45), xline = -85, yline = -30, proj = prj)
-plot(g3)
-text(g3labs, lab = parse(text = g3labs$lab))
-
-## polygonal graticule on Orthographic projection
-xx <- seq(-90, 90, length = 10) + 147
-yy <- seq(-90, 90, length = 5)
- g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147 +ellps=WGS84", tiles = TRUE)
- plot(g, col = c("black", "grey"))
-
- library(maptools)
- data(wrld_simpl)
- w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(proj4string(g)))
- plot(w, add = TRUE, border = "dodgerblue")
- }}
+graticule()
 }

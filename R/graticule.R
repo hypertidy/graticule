@@ -10,7 +10,7 @@ limfun <- function(x, lim, meridian = TRUE, nverts = NULL) {
     mindist <- 5e4
     warning(sprintf("option('graticule.mindist') is malformed, using %fm", mindist))
   }
- if (!meridian) {
+  if (!meridian) {
     out <- ll_extent(lim, c(x, x), mindist = mindist, nverts = nverts)
   } else {
     out <- ll_extent(c(x, x), lim, mindist = mindist, nverts = nverts)
@@ -50,7 +50,7 @@ buildlines <- function(x) {
 # }
 
 lonlatp4 <- function() {
-  "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0"
+  "+proj=longlat +datum=WGS84"
 }
 
 #' Create graticule lines.
@@ -72,43 +72,11 @@ lonlatp4 <- function() {
 #' @param proj optional proj.4 string for output object
 #' @param tiles if \code{TRUE} return polygons as output
 #' @export
-#'
-#' @examples
-#'\donttest{\dontrun{
-#' library(rgdal)
-#' x <- as.matrix(expand.grid(x = seq(100, 240, by = 15), y = seq(-85, -30, by = 15)))
-#' prj <- "+proj=laea +lon_0=180 +lat_0=-70 +ellps=WGS84"
-#' px <- project(x, prj)
-#' g <- graticule(unique(x[,1]), unique(x[,2]))
-#' pg <- spTransform(g, CRS(prj))
-#' plot(px, type = "n")
-#' plot(pg, add = TRUE)
-#'
-#' g2 <- graticule(unique(x[,1]), unique(x[,2]), ylim = c(-90, 0), xlim = c(110, 250))
-#' pg2 <- spTransform(g2, CRS(prj))
-#' plot(px, type = "n")
-#' plot(pg2, add = TRUE)
-#'
-#' prj <- "+proj=laea +lon_0=0 +lat_0=-90 +ellps=WGS84"
-#' xx <- c(-120, -100, -80, -60, -40); yy <- c(-65, -55, -45)
-#' g3 <- graticule(xx, yy, ylim = c(-70, -30), proj = prj)
-#' g3labs <- graticule_labels(xx, c(-65, -45), xline = -85, yline = -30, proj = prj)
-#' plot(g3)
-#' text(g3labs, lab = parse(text = g3labs$lab))
-#'
-#' ## polygonal graticule on Orthographic projection
-#' xx <- seq(-90, 90, length = 10) + 147
-#' yy <- seq(-90, 90, length = 5)
-#'  g <- graticule(xx, yy, proj = "+proj=ortho +lon_0=147 +ellps=WGS84", tiles = TRUE)
-#'  plot(g, col = c("black", "grey"))
-#'
-#'  library(maptools)
-#'  data(wrld_simpl)
-#'  w <- spTransform(subset(wrld_simpl, NAME == "Australia"), CRS(proj4string(g)))
-#'  plot(w, add = TRUE, border = "dodgerblue")
-#'  }}
+#' @importFrom reproj reproj_xy
 #' @importFrom raster isLonLat raster extent values<- ncell res
-#' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS spTransform
+#' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS
+#' @examples
+#' graticule()
 graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles = FALSE) {
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
@@ -126,16 +94,16 @@ graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles 
   if (missing(lons)) {
     #usr <- par("usr")
     #if (all(usr == c(0, 1, 0, 1))) {
-      lons <- seq(-180, 180, by = 15)
+    lons <- seq(-180, 180, by = 15)
   }
   if (missing(lats)) {
-      lats <- seq(-90, 90, by = 10)
+    lats <- seq(-90, 90, by = 10)
   }
 
-if (tiles) {
-  pp <- graticule_tiles(lons, lats, proj = proj)
-  return(pp)
-}
+  if (tiles) {
+    pp <- graticule_tiles(lons, lats, proj = proj)
+    return(pp)
+  }
   if (missing(xlim)) xlim <- range(lons)
   if (missing(ylim)) ylim <- range(lats)
   xline <- lapply(lons, limfun, lim = ylim, meridian = TRUE, nverts = nverts)
@@ -146,16 +114,21 @@ if (tiles) {
   xs$type <- "meridian"
   ys$type <- "parallel"
   d <- rbind(xs, ys)
-  #  coordinates(d) <- ~x+y
-  # proj4string(d) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
   d0 <- split(d, d$id)
   l <- vector("list", length(d0))
-  for (i in seq_along(d0)) l[[i]] <- sp::Lines(list(sp::Line(as.matrix(d0[[i]][, c("x", "y")]))), ID = as.character(i))
-  l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(lonlatp4())),
+  for (i in seq_along(d0)) {
+    m1 <- as.matrix(d0[[i]][, c("x", "y")])
+    if (trans) {
+      m1 <- reproj::reproj_xy(m1, proj, source = "+proj=longlat +datum=WGS84")
+    } else {
+      proj <- "OGC:CRS84"
+    }
+    l1 <- sp::Lines(list(sp::Line(m1)), ID = as.character(i))
+    l[[i]] <- l1
+  }
+  l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(proj)),
                                  data.frame(ID = as.character(seq_along(l))))
-  if (trans) l <- sp::spTransform(l, sp::CRS(proj))
   l
-  #d0$type <- c(rep("meridian", length(unique(xs$id))), rep("parallel", length(unique(ys$id))))
 
 }
 
@@ -203,11 +176,16 @@ graticule_labels <- function(lons, lats, xline, yline, proj = NULL) {
   latlabs$lab <- degreeLabelsNS(latlabs$y)
   latlabs$islon <- FALSE
   l <- rbind(lonlabs, latlabs)
-  coordinates(l) <- 1:2
-  proj4string(l) <- CRS(lonlatp4())
+  p4 <- lonlatp4()
   if (trans) {
-    l <- sp::spTransform(l, CRS(proj))
+    l[1:2] <- reproj::reproj_xy(l[1:2], proj, source = p4)
+    p4 <- proj
   }
+
+  coordinates(l) <- 1:2
+
+
+  proj4string(l) <- CRS(p4)
 
   l
 }
