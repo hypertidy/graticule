@@ -7,7 +7,7 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/graticule)](https://CRAN.R-project.org/package=graticule)
-[![R-CMD-check](https://github.com/mdsumner/graticule/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mdsumner/graticule/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hypertidy/graticule/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Graticules are the longitude latitude lines shown on a projected map,
