@@ -1,3 +1,7 @@
+# graticule 0.3.0
+
+* Remove checks for tests upset by package startup messages. 
+
 # graticule 0.2.0
 
 * Now return values of functions are documented. 

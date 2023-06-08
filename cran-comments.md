@@ -1,11 +1,6 @@
-## graticule 0.2.0
+## graticule 0.3.0
 
-Release to remove dependency rgdal. 
-
-* Removed rgdal, maptools, rworldmap, oce from Suggests, and tested check succeeds without
- those being installed.
- 
-* Documented the return values of all functions. 
+Fixed failing tests. 
 
 Thank you!
 

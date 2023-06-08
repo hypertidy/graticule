@@ -2,9 +2,9 @@ lon <- seq(170, 350, by = 10)
 lat <- c(-50, -40)
 
 test_that("no longitude warnings", {
-  expect_silent(graticule(lon, lat))
+  expect_s4_class(graticule(lon, lat), "SpatialLinesDataFrame")
 
-  expect_silent(graticule(lon, lat, tiles = TRUE))
+  expect_s4_class(graticule(lon, lat, tiles = TRUE), "SpatialPolygonsDataFrame")
 
-  expect_silent(graticule_labels(lon, lat))
+  expect_s4_class(graticule_labels(lon, lat), "SpatialPointsDataFrame")
 })
