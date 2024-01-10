@@ -18,6 +18,7 @@ Imports:
     stats,
     reproj (>= 0.4.3)
 Suggests:
+    sessioninfo,
     knitr,
     spex,
     testthat (>= 2.1.0),
