@@ -153,6 +153,6 @@ I tend to use the same terminology as used within [Manifold System](https://mani
 ## Environment
 
 ```{r}
-devtools::session_info()
+sessioninfo::session_info()
 ```
 
