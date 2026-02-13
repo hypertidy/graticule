@@ -22,7 +22,7 @@ graticule(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles = FALSE)
 \item{tiles}{if \code{TRUE} return polygons as output}
 }
 \value{
-SpatialLines or SpatialPolygons object
+SpatVector lines or polygons
 }
 \description{
 Specify the creation of lines along meridians by specifying their placement

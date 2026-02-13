@@ -33,21 +33,24 @@ buildlines <- function(x) {
   }))
 }
 
-## from raster findMethods("isLonLat")[["character"]]
-# isLonLat <- function (x)
-# {
-#   res1 <- grep("longlat", as.character(x), fixed = TRUE)
-#   res2 <- grep("lonlat", as.character(x), fixed = TRUE)
-#   if (length(res1) == 0L && length(res2) == 0L) {
-#     return(FALSE)
-#   }
-#   else {
-#     return(TRUE)
-#   }
-# }
-
 lonlatp4 <- function() {
   "+proj=longlat +datum=WGS84"
+}
+
+## internal reimplementations of sp::degreeLabelsEW / sp::degreeLabelsNS
+degreeLabelsEW <- function(x) {
+  x <- ifelse(x > 180, x - 360, x)
+  pos <- sign(x) + 2L
+  if (any(x == -180)) pos[x == -180] <- 2L
+  if (any(x == 180)) pos[x == 180] <- 2L
+  dir <- c("*W", "", "*E")
+  paste0(abs(x), "*degree", dir[pos])
+}
+
+degreeLabelsNS <- function(x) {
+  pos <- sign(x) + 2L
+  dir <- c("*S", "", "*N")
+  paste0(abs(x), "*degree", dir[pos])
 }
 
 #' Create graticule lines.
@@ -68,11 +71,10 @@ lonlatp4 <- function() {
 #' @param ylim maximum range of meridional lines
 #' @param proj optional proj.4 string for output object
 #' @param tiles if \code{TRUE} return polygons as output
-#' @return SpatialLines or SpatialPolygons object
+#' @return SpatVector lines or polygons
 #' @export
 #' @importFrom reproj reproj_xy
-#' @importFrom raster isLonLat raster extent values<- ncell res
-#' @importFrom sp SpatialLinesDataFrame Line Lines SpatialLines CRS
+#' @importFrom terra vect crs is.lonlat geomtype "values<-"
 #' @examples
 #' graticule()
 graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles = FALSE) {
@@ -88,10 +90,8 @@ graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles 
     }
 
   }
-  if (!raster::isLonLat(proj)) trans <- TRUE
+  if (!terra::is.lonlat(terra::crs(proj))) trans <- TRUE
   if (missing(lons)) {
-    #usr <- par("usr")
-    #if (all(usr == c(0, 1, 0, 1))) {
     lons <- seq(-180, 180, by = 15)
   }
   if (missing(lats)) {
@@ -113,7 +113,7 @@ graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles 
   ys$type <- "parallel"
   d <- rbind(xs, ys)
   d0 <- split(d, d$id)
-  l <- vector("list", length(d0))
+  mats <- vector("list", length(d0))
   for (i in seq_along(d0)) {
     m1 <- as.matrix(d0[[i]][, c("x", "y")])
     if (trans) {
@@ -121,11 +121,12 @@ graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles 
     } else {
       proj <- "OGC:CRS84"
     }
-    l1 <- sp::Lines(list(sp::Line(m1)), ID = as.character(i))
-    l[[i]] <- l1
+    ## terra line geom: columns are geom, part, x, y, (hole)
+    mats[[i]] <- cbind(geom = i, part = 1, x = m1[, 1], y = m1[, 2])
   }
-  l <- sp::SpatialLinesDataFrame(sp::SpatialLines(l, proj4string = sp::CRS(proj)),
-                                 data.frame(ID = as.character(seq_along(l))))
+  g <- do.call(rbind, mats)
+  l <- terra::vect(g, type = "lines", crs = proj)
+  values(l) <- data.frame(ID = as.character(seq_len(nrow(l))))
   l
 
 }
@@ -134,32 +135,31 @@ graticule <- function(lons, lats, nverts = NULL, xlim, ylim, proj = NULL, tiles 
 #'
 #' Returns a set of points with labels, for plotting in conjuction with \code{\link{graticule}}.
 #'
-#' SpatialPoints are returned in the projection of \code{proj} if given, or longlat / WGS84.
+#' SpatVector points are returned in the projection of \code{proj} if given, or longlat / WGS84.
 #' @param lons longitudes for meridional labels
 #' @param lats latitudes for parallel labels
 #' @param xline meridian/s for placement of parallel labels
 #' @param yline parallel/s for placement of meridian labels
 #' @param proj optional proj.4 string for output object
 #' @export
-#' @importFrom sp degreeLabelsEW degreeLabelsNS coordinates<- proj4string<-
-#' @return SpatialPoints object with labels for downstream use
+#' @return SpatVector points with labels for downstream use
 #' @examples
 #' xx <- c(100, 120, 160, 180)
 #' yy <- c(-80,-70,-60, -50,-45, -30)
 #' prj <- "+proj=lcc +lon_0=150 +lat_0=-80 +lat_1=-85 +lat_2=-75 +ellps=WGS84"
-#' plot(graticule(lons = xx, lats = yy,  proj = prj))
+#' g <- graticule(lons = xx, lats = yy,  proj = prj)
+#' terra::plot(g)
 #' labs <- graticule_labels(lons = xx, lats = yy, xline = 100, yline = -80,  proj = prj)
 #' op <- par(xpd = NA)
-#' text(labs, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2)
+#' xy <- terra::crds(labs)
+#' text(xy, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2)
 #' par(op)
 graticule_labels <- function(lons, lats, xline, yline, proj = NULL) {
   if (is.null(proj)) proj <- lonlatp4()
   proj <- as.character(proj)  ## in case we are given CRS
   trans <- FALSE
-  if (!raster::isLonLat(proj)) trans <- TRUE
+  if (!terra::is.lonlat(terra::crs(proj))) trans <- TRUE
   if (missing(lons)) {
-    #usr <- par("usr")
-    #if (all(usr == c(0, 1, 0, 1))) {
     lons <- seq(-180, 180, by = 15)
   }
   if (missing(lats)) {
@@ -177,14 +177,9 @@ graticule_labels <- function(lons, lats, xline, yline, proj = NULL) {
   l <- rbind(lonlabs, latlabs)
   p4 <- lonlatp4()
   if (trans) {
-    l[1:2] <- reproj::reproj_xy(l[1:2], proj, source = p4)
+    l[1:2] <- reproj::reproj_xy(as.matrix(l[1:2]), proj, source = p4)
     p4 <- proj
   }
 
-  coordinates(l) <- 1:2
-
-
-  proj4string(l) <- CRS(p4)
-
-  l
+  terra::vect(l, geom = c("x", "y"), crs = p4)
 }

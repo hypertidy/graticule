@@ -18,21 +18,23 @@ graticule_labels(lons, lats, xline, yline, proj = NULL)
 \item{proj}{optional proj.4 string for output object}
 }
 \value{
-SpatialPoints object with labels for downstream use
+SpatVector points with labels for downstream use
 }
 \description{
 Returns a set of points with labels, for plotting in conjuction with \code{\link{graticule}}.
 }
 \details{
-SpatialPoints are returned in the projection of \code{proj} if given, or longlat / WGS84.
+SpatVector points are returned in the projection of \code{proj} if given, or longlat / WGS84.
 }
 \examples{
 xx <- c(100, 120, 160, 180)
 yy <- c(-80,-70,-60, -50,-45, -30)
 prj <- "+proj=lcc +lon_0=150 +lat_0=-80 +lat_1=-85 +lat_2=-75 +ellps=WGS84"
-plot(graticule(lons = xx, lats = yy,  proj = prj))
+g <- graticule(lons = xx, lats = yy,  proj = prj)
+terra::plot(g)
 labs <- graticule_labels(lons = xx, lats = yy, xline = 100, yline = -80,  proj = prj)
 op <- par(xpd = NA)
-text(labs, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2)
+xy <- terra::crds(labs)
+text(xy, lab = parse(text = labs$lab), pos = c(2, 1)[labs$islon + 1], adj = 1.2)
 par(op)
 }

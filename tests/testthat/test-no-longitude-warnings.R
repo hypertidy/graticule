@@ -2,9 +2,15 @@ lon <- seq(170, 350, by = 10)
 lat <- c(-50, -40)
 
 test_that("no longitude warnings", {
-  expect_s4_class(graticule(lon, lat), "SpatialLinesDataFrame")
+  g <- graticule(lon, lat)
+  expect_s4_class(g, "SpatVector")
+  expect_equal(terra::geomtype(g), "lines")
 
-  expect_s4_class(graticule(lon, lat, tiles = TRUE), "SpatialPolygonsDataFrame")
+  gt <- graticule(lon, lat, tiles = TRUE)
+  expect_s4_class(gt, "SpatVector")
+  expect_equal(terra::geomtype(gt), "polygons")
 
-  expect_s4_class(graticule_labels(lon, lat), "SpatialPointsDataFrame")
+  gl <- graticule_labels(lon, lat)
+  expect_s4_class(gl, "SpatVector")
+  expect_equal(terra::geomtype(gl), "points")
 })

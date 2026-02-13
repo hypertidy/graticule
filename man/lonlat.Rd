@@ -15,7 +15,7 @@ lonlat(
 )
 }
 \arguments{
-\item{x}{input raster}
+\item{x}{input SpatRaster}
 
 \item{na.rm}{logical, remove missing values from generated coordinates}
 
@@ -30,9 +30,9 @@ lonlat(
 \item{add}{logical, add to current plot or instantiate one}
 }
 \value{
-RasterBrick of the longitude and latitude values,  two layers
+SpatRaster of the longitude and latitude values, two layers
 
-(invisibly) the raster (RasterBrick) object with longitude and latitude values of the input
+(invisibly) the SpatRaster object with longitude and latitude values of the input
  as two layers, otherwise this function used for side-effect (drawing on a plot)
 }
 \description{
@@ -44,9 +44,9 @@ Plot is added to an existing plot by default.
 }
 \examples{
 plot(c(-180, 180), c(-90, 90))
-lonlat(raster::raster())
+lonlat(terra::rast())
 
-p <- raster::projectExtent(raster::raster(), "+proj=igh")
+p <- terra::project(terra::rast(), "+proj=igh")
 lonlat(p, add = FALSE)
 lonlat(p, levels = seq(-180, 180, by  =15), add = FALSE)
 

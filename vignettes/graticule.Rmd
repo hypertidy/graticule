@@ -46,7 +46,7 @@ This is an area that needs much more discussion and outlining of needs and exper
 A simple example to build a map around the state of Victoria in Australia. Victoria uses a local Lambert Conformal Conic projection that was introduced while the shift to GDA94 was implemented, to reduce complications due to working with more than one UTM zone for the state.     
 
 ```{r,message=FALSE, eval=FALSE}
-library(raster)
+library(terra)
 
 library(graticule)
 
@@ -69,11 +69,10 @@ labs <- graticule_labels(lons, lats, xline = min(xl), yline = max(yl), proj = pr
 
 ## set up a map extent and plot
 op <- par(mar = rep(0, 4))
-plot(extent(grat) + c(4, 2) * 1e5, asp = 1, type = "n", axes = FALSE, xlab = "", ylab = "")
-#plot(pmap, add = TRUE)
-## the lines are a SpatialLinesDataFrame
+plot(ext(grat) + c(-4e5, 2e5, -4e5, 2e5), type = "n", axes = FALSE, xlab = "", ylab = "")
+## the lines are a SpatVector
 plot(grat, add = TRUE, lty = 5, col = rgb(0, 0, 0, 0.8))
-## the labels are a SpatialPointsDataFrame, and islon tells us which kind
+## the labels are a SpatVector, and islon tells us which kind
 text(subset(labs, labs$islon), lab = parse(text = labs$lab[labs$islon]), pos = 3)
 text(subset(labs, !labs$islon), lab = parse(text = labs$lab[!labs$islon]), pos = 2)
 par(op)
@@ -86,23 +85,23 @@ par(op)
 Download some sea ice concentration data and plot with a graticule. These passive microwave data are defined on a Polar Stereographic grid on the Hughes ellipsoid (predating WGS84), and there are daily files available since 1978.   This is not the prettiest map, but the example is showing how we have control over exactly where the lines are created. We can build the lines anywhere, not necessarily at regular intervals or rounded numbers, and we can over or under extend the parallels relative to the meridians and vice versa. 
 
 ```{r,message=FALSE}
-library(raster)
+library(terra)
 library(graticule)
 
 tfile <- system.file("extdata",  "nt_20140320_f17_v01_s.bin", package = "graticule")
-ice <- raster(tfile)
+ice <- rast(tfile)
 
 meridians <- seq(-180, 160, by = 20)
 parallels <- c(-80, -73.77, -68, -55, -45)
 mlim <- c(-180, 180)
 plim <- c(-88, -50)
-grat <- graticule(lons = meridians, lats = parallels, xlim = mlim, ylim = plim, proj = projection(ice))
-labs <- graticule_labels(meridians, parallels, xline = -45, yline = -60, proj = projection(ice))
+grat <- graticule(lons = meridians, lats = parallels, xlim = mlim, ylim = plim, proj = crs(ice))
+labs <- graticule_labels(meridians, parallels, xline = -45, yline = -60, proj = crs(ice))
 plot(ice, axes = FALSE)
 plot(grat, add = TRUE, lty = 3)
 text(labs, lab = parse(text= labs$lab), col= c("firebrick", "darkblue")[labs$islon + 1], cex = 0.85)
 title(sprintf("Sea ice concentration %s", gsub(".bin", "", basename(tfile))), cex.main = 0.8)
-title(sub = projection(ice), cex.sub = 0.6)
+title(sub = crs(ice, describe = TRUE)$name, cex.sub = 0.6)
 ```
 
 ## Create the graticule as polygons
@@ -110,11 +109,9 @@ title(sub = projection(ice), cex.sub = 0.6)
 Continuing from the sea ice example, build the graticule grid as actual polygons. Necessarily the `xlim/ylim` option is ignored since we have not specified sensibly closed polygonal rings where there are under or over laps. 
 
 ```{r}
-polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = projection(ice), tiles = TRUE)
-centroids <- reproj::reproj_xy(coordinates(polargrid), "+proj=longlat +datum=WGS84", source = projection(ice))
-labs <- graticule_labels(meridians, parallels,  proj = projection(ice))
-#labs <- graticule_labels(as.integer(centroids[,1]), as.integer(centroids[,2]),  proj = projection(ice))
-#labs <- labs[!duplicated(as.data.frame(labs)), ] ## this needs a fix
+polargrid <- graticule(lons = c(meridians, 180), lats = parallels,  proj = crs(ice), tiles = TRUE)
+centroids <- reproj::reproj_xy(crds(centroids(polargrid)), "+proj=longlat +datum=WGS84", source = crs(ice))
+labs <- graticule_labels(meridians, parallels,  proj = crs(ice))
 cols <- sample(colors(), nrow(polargrid))
 op <- par(mar = rep(0, 4))
 plot(polargrid, col  = cols, bg = "black")
@@ -135,7 +132,7 @@ Also see here for another implementation of the Tissot Indicatrix in R by user [
 
 ## Notes
 
-Efforts could be shared with the sp and rgdal projects to improve the functionality for the `llgridlines` and its worker functions `gridlines` and `gridat` in that central place, and I agree with this. But I have an interest in working with graticules more directly as objects, and potentially stored in relational-table approach built on dplyr, and so I just found it simpler to start from scratch in this package. Also, there is a lot of this functionality spread around the place in sp, raster, maptools, fields, oce and many others. It is time for a new review, analogous to the effort that built sp in ca. 2002. 
+Efforts could be shared with other projects to improve the functionality for graticule creation, and I agree with this. But I have an interest in working with graticules more directly as objects, and so I just found it simpler to start from scratch in this package.
 
 ### Terminology
 
@@ -150,9 +147,5 @@ I tend to use the same terminology as used within [Manifold System](https://mani
 
 [Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.](https://pubs.usgs.gov/publication/pp1395)
 
-## Environment
 
-```{r}
-sessioninfo::session_info()
-```
 

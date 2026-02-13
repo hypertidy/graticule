@@ -17,6 +17,7 @@ NULL
 #' Graticule tiles
 #' @noRd
 #'
+#' @importFrom terra rast ext ncell cellFromRowCol ncol nrow xmin xmax ymin ymax
 #' @importFrom stats approx
 #' @importFrom utils head
 graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, by = 12),
@@ -24,37 +25,35 @@ graticule_tiles <- function(lons = seq(-180, 180, by = 15), lats = seq(-84, 84, 
                             margin = FALSE) {
   if (length(lons) < 2) stop("length of argument `lons` is < 2")
   if (length(lats) < 2) stop("length of argument `lats` is < 2")
-  grid <- raster::raster(raster::extent(range(lons), range(lats)),
-                         ncols = length(lons)-1, nrow = length(lats)-1)
-
+  grid <- terra::rast(terra::ext(range(lons), range(lats)),
+                      ncols = length(lons) - 1, nrows = length(lats) - 1)
 
   if (margin) {
-
     cells <-
-      c(raster::cellFromRow(grid, 1),             ## top margin
-        raster::cellFromCol(grid, ncol(grid))[-c(1,nrow(grid))],      ## right margin
-        utils::head(rev(raster::cellFromRow(grid, nrow(grid))), -1), ## bottom margin
-        utils::head(rev(raster::cellFromCol(grid, 1)), -1))          ## left margin
+      c(terra::cellFromRowCol(grid, 1, seq_len(terra::ncol(grid))),                            ## top margin
+        terra::cellFromRowCol(grid, seq_len(terra::nrow(grid))[-c(1, terra::nrow(grid))], terra::ncol(grid)),  ## right margin
+        utils::head(rev(terra::cellFromRowCol(grid, terra::nrow(grid), seq_len(terra::ncol(grid)))), -1),       ## bottom margin
+        utils::head(rev(terra::cellFromRowCol(grid, seq_len(terra::nrow(grid)), 1)), -1))                       ## left margin
   } else {
-    cells <- seq_len(raster::ncell(grid))
+    cells <- seq_len(terra::ncell(grid))
   }
 
   ll <- vector("list", length(cells))
-  ## loop extents of every pixel (I know, I know)
   p4 <- lonlatp4()
   for (i in seq_along(ll)) {
-    ex <- raster::extentFromCells(grid, cells[i])
-    m1 <- ll_extent(c(ex@xmin, ex@xmax), c(ex@ymin, ex@ymax))
+    ex <- terra::ext(grid, cells = cells[i])
+    m1 <- ll_extent(c(terra::xmin(ex), terra::xmax(ex)), c(terra::ymin(ex), terra::ymax(ex)))
     if (!is.null(proj)) {
       m1 <- reproj::reproj_xy(m1, proj, source = lonlatp4())
       p4 <- proj
     }
-    ll[[i]] <- m1
+    ## close the polygon ring
+    m1 <- rbind(m1, m1[1, , drop = FALSE])
+    ll[[i]] <- cbind(geom = i, part = 1, x = m1[, 1], y = m1[, 2], hole = 0)
   }
-  xx <- do.call(raster::spPolygons, ll)
-
-  xx <- sp::SpatialPolygonsDataFrame(xx, data.frame(x = 1:length(xx)))
-  raster::projection(xx) <-   p4
+  g <- do.call(rbind, ll)
+  xx <- terra::vect(g, type = "polygons", crs = p4)
+  values(xx) <- data.frame(x = seq_along(ll))
   xx
 }
 
