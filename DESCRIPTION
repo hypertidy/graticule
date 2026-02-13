@@ -18,7 +18,7 @@ Imports:
     stats,
     reproj (>= 0.4.3)
 Suggests:
-    devtools,
+    sessioninfo,
     knitr,
     spex,
     testthat (>= 2.1.0),
@@ -27,5 +27,5 @@ Suggests:
 VignetteBuilder: knitr
 Encoding: UTF-8
 BugReports: https://github.com/hypertidy/graticule/issues
-URL: https://github.com/hypertidy/graticule
-RoxygenNote: 7.2.3
+URL: https://github.com/hypertidy/graticule, https://hypertidy.github.io/graticule/
+RoxygenNote: 7.3.3

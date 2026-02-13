@@ -3,7 +3,6 @@
 \docType{package}
 \name{graticule-package}
 \alias{graticule-package}
-\alias{_PACKAGE}
 \title{graticule: Meridional and Parallel Lines for Maps}
 \description{
 Create graticule lines and labels for maps. Control the creation of lines or tiles by setting their placement (at particular meridians and parallels) and extent (along parallels and meridians). Labels are created independently of lines.
@@ -12,6 +11,7 @@ Create graticule lines and labels for maps. Control the creation of lines or til
 Useful links:
 \itemize{
   \item \url{https://github.com/hypertidy/graticule}
+  \item \url{https://hypertidy.github.io/graticule/}
   \item Report bugs at \url{https://github.com/hypertidy/graticule/issues}
 }
 
