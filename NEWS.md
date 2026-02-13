@@ -1,3 +1,7 @@
+# graticule 0.4.0
+
+* Fixed namespace doc thanks to CRAN.
+
 # graticule 0.3.0
 
 * Remove checks for tests upset by package startup messages. 

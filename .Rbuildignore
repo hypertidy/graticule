@@ -15,3 +15,5 @@ revdep/*
 ^codecov\.yml$
 ^CRAN-RELEASE$
 ^\.github$
+^CRAN-SUBMISSION$
+^graticule\.Rproj$

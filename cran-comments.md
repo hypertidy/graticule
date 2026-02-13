@@ -1,16 +1,12 @@
-## graticule 0.3.0
+## graticule 0.4.0
 
-Fixed failing tests. 
+Fixed namespace issue. 
 
 Thank you!
 
 ## Test environments
 
 * win-builder (release and devel)
-* Linux local release, github actions
+* Linux local release
 * macbuilder
-
-## R CMD check results
-
-There were no ERRORs or WARNINGs or NOTEs. 
 

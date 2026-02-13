@@ -148,7 +148,7 @@ I tend to use the same terminology as used within [Manifold System](https://mani
 
 ## References
 
-[Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.](https://pubs.er.usgs.gov/publication/pp1395)
+[Snyder, John Parr. Map projections--A working manual. No. 1395. USGPO, 1987.](https://pubs.usgs.gov/publication/pp1395)
 
 ## Environment
 

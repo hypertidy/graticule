@@ -1,8 +1,5 @@
-#' graticule: graticule lines for maps
-#'
-#' @docType package
-#' @name graticule
-NULL
+
+
 limfun <- function(x, lim, meridian = TRUE, nverts = NULL) {
 
   mindist <- getOption("graticule.mindist")
